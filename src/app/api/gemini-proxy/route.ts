@@ -1,11 +1,14 @@
-import { GoogleGenAI, Type } from '@google/genai'
+import { GoogleGenAI } from '@google/genai'
 import { NextResponse } from 'next/server'
+import { connect } from '../../../lib/db'
 
 const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY
 })
 
 export async function GET (request: Request): Promise<NextResponse> {
+  await connect()
+
   const response = await ai.models.generateContent({
     model: 'gemini-2.0-flash',
     contents: [
@@ -42,7 +45,7 @@ export async function GET (request: Request): Promise<NextResponse> {
     }
   })
 
-  const result = JSON.parse(response.text)
+  const result = await JSON.parse(response.text)
 
   return NextResponse.json(result)
 }
