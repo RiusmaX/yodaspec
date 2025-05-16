@@ -12,3 +12,14 @@ export interface IProject {
   updatedAt?: Date
 
 }
+export interface IaCheckInput {
+  enrichedPrompt: string
+  features: string[]
+  specs: any[]
+}
+
+export interface CheckResult {
+  promptLabel: string
+  promptText: string
+  response: string
+}
