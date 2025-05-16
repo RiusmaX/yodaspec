@@ -1,5 +1,5 @@
 import { IProject } from '@/app/types/interfaces'
-import { connect } from '@/lib/db'
+import { connect, disconnect } from '@/lib/db'
 import Project from '../models/project'
 import { Model } from 'mongoose'
 
@@ -10,7 +10,21 @@ const getProjects = async (): Promise<IProject[]> => {
     return projects
   } catch (error) {
     return []
+  } finally {
+    await disconnect()
   }
 }
 
-export { getProjects }
+const getOneProject = async (projectId: string): Promise<IProject | null> => {
+  await connect()
+  try {
+    const project = await (Project as Model<IProject>).findById(projectId).lean().exec()
+    return project
+  } catch (error) {
+    return null
+  } finally {
+    await disconnect()
+  }
+}
+
+export { getProjects, getOneProject }

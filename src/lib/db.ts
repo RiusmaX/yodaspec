@@ -34,3 +34,13 @@ export const connect = async (): Promise<void> => {
     throw new Error('Error connecting to MongoDB')
   }
 }
+
+export const disconnect = async (): Promise<void> => {
+  try {
+    await mongoose.disconnect()
+    console.log('Disconnected from MongoDB')
+  } catch (error) {
+    console.log('Error disconnecting from MongoDB', error)
+    throw new Error('Error disconnecting from MongoDB')
+  }
+}
