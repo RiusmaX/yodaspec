@@ -1,3 +1,4 @@
+import { connect } from '@/lib/db'
 import { GoogleGenAI, Type } from '@google/genai'
 import { NextResponse } from 'next/server'
 
@@ -6,6 +7,7 @@ const ai = new GoogleGenAI({
 })
 
 export async function GET (request: Request): Promise<NextResponse> {
+  await connect()
   const response = await ai.models.generateContent({
     model: 'gemini-2.0-flash',
     contents: [
@@ -42,7 +44,11 @@ export async function GET (request: Request): Promise<NextResponse> {
     }
   })
 
-  const result = JSON.parse(response.text)
+  const result = JSON.parse(String(response.text))
 
-  return NextResponse.json(result)
+  return new NextResponse(JSON.stringify(result), {
+    headers: {
+      'Content-Type': 'application/json; charset=utf-8'
+    }
+  })
 }
