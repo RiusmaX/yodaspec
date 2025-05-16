@@ -1,7 +1,7 @@
 import { getProjectById } from '@/db/services/project-service'
 import { redirect } from 'next/navigation'
 
-async function ProjectHome (props: Readonly<{ params: { projectId: string } }>): Promise<React.ReactNode> {
+async function ProjectHome (props: Readonly<{ params: Promise<{ projectId: string }> }>): Promise<React.ReactNode> {
   const { projectId } = await props.params
 
   const project = await getProjectById(projectId)
