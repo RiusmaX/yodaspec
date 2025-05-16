@@ -1,4 +1,5 @@
 import { connect } from '@/lib/db'
+import { testPromptStory } from '@/prompts/test-prompts'
 import { GoogleGenAI } from '@google/genai'
 import { NextResponse } from 'next/server'
 
@@ -12,7 +13,7 @@ export async function GET (request: Request): Promise<NextResponse> {
     model: 'gemini-2.0-flash',
     contents: [
       {
-        text: 'Invente une histoire complète dans le style des Kassos. Je veux le titre de l\'histoire, le contenu de l\'histoire et les personnages de l\'histoire dans le format demandé JSON. Je veux que l\'histoire longue complète et drôle. Le format de réponse doit être JSON comme ceci : { titre, histoire, personnages }.'
+        text: testPromptStory
       }
     ],
     config: {
