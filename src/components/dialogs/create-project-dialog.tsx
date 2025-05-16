@@ -15,7 +15,6 @@ function CreateProjectDialog ({ createProject }: Readonly<{ createProject: (proj
     title: '',
     description: ''
   })
-
   const [isLoading, setIsLoading] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
@@ -39,7 +38,7 @@ function CreateProjectDialog ({ createProject }: Readonly<{ createProject: (proj
         <DialogHeader>
           <DialogTitle>Créer un projet</DialogTitle>
           <DialogDescription>
-            Remplissez les champs ci-dessous pour créer un projet.
+            Remplissez les champs ci-dessous pour créer un nouveau projet.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={(e) => { void handleSubmit(e) }}>
