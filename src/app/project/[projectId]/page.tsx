@@ -3,8 +3,8 @@ import { redirect } from 'next/navigation'
 import Loading from './loading'
 import { Suspense } from 'react'
 
-async function ProjectHome (props: Readonly<{ params: { projectId: string } }>): Promise<React.ReactNode> {
-  const { projectId } = props.params
+async function ProjectHome (props: Readonly<{ params: Promise<{ projectId: string }> }>): Promise<React.ReactNode> {
+  const { projectId } = await props.params
   const project = await getOneProject(projectId)
   if (project === null) {
     redirect('/')
