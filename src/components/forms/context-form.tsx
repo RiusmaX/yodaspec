@@ -14,6 +14,7 @@ import { Textarea } from '../ui/textarea'
 import { JSX } from 'react'
 import { IProject } from '@/types/interfaces'
 import { toast } from 'react-toastify'
+import { updateProject } from '@/actions/project-actions'
 
 export function ContextForm (): JSX.Element {
   const form = useForm<IProject>({
@@ -31,10 +32,11 @@ export function ContextForm (): JSX.Element {
     }
   })
 
-  const onSubmit = (data: IProject): void => {
+  // Gestion de l'envoi du formulaire
+  const onSubmit = async (data: IProject): Promise<void> => {
     console.log('Form submitted:', data)
     try {
-      // updateProject(data)
+      await updateProject(data)
       toast.success('Les informations ont été enregistrées avec succès !')
     } catch (error) {
       toast.error(`Une erreur est survenue lors de l'enregistrement des informations' ${String(error)}`)
