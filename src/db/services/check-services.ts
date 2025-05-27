@@ -1,6 +1,7 @@
 import { GoogleGenAI } from '@google/genai'
-import { CheckResult, IaCheckInput, Feature, Spec } from '@/types/interface'
-import { verifyContextPrompt, matchFeaturesPrompt } from '@/prompt/step4/verify-context'
+import { IaCheckResult, IaCheckInput, Feature, Spec } from '@/types/interface'
+import { verifyContextPrompt} from '@/prompt/step4/verify-context'
+import { matchFeaturesPrompt } from '@/prompt/step4/match-features'
 
 // Initialisation de l'API Google GenAI
 const ai = new GoogleGenAI({
@@ -11,10 +12,10 @@ export const runIaChecks = async ({
   enrichedPrompt,
   features,
   specs
-}: IaCheckInput): Promise<CheckResult[]> => {
+}: IaCheckInput): Promise<IaCheckResult[]> => {
   const context = createContext(enrichedPrompt, features, specs)
 
-  const results: CheckResult[] = []
+  const results: IaCheckResult[] = []
 
   for (const { label, template } of verifyContextPrompt) {
     const promptText = template(context)
