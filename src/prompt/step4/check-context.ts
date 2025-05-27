@@ -1,4 +1,4 @@
-export const verifyContextPrompt = (enriched: string, specs: any[]): string => `
+export const CheckContextPrompt = (enriched: string, specs: any[]): string => `
 Tu es un expert en validation de spécifications fonctionnelles.
 
 Voici le contexte global du projet :

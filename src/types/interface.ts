@@ -42,3 +42,8 @@ export interface CheckPrompt {
   type: 'text' | 'json'
   template: (features: any, specs: any, enrichedPrompt?: string) => string
 }
+
+export interface enrichedContext {
+  title: string
+  text: string
+}
