@@ -4,7 +4,7 @@ export interface IProject {
   description: string
   createdAt?: Date
   updatedAt?: Date
-  step2: {
+  step2?: {
     features: IFeature[]
   }
 }
