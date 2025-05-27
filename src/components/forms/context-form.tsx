@@ -16,7 +16,7 @@ import { IProject } from '@/types/interfaces'
 import { toast } from 'react-toastify'
 import { updateProject } from '@/actions/project-actions'
 
-export function ContextForm (): JSX.Element {
+export function ContextForm ({ project }: { project: IProject }): JSX.Element {
   const form = useForm<IProject>({
     mode: 'onBlur',
     defaultValues: {
@@ -36,7 +36,7 @@ export function ContextForm (): JSX.Element {
   const onSubmit = async (data: IProject): Promise<void> => {
     console.log('Form submitted:', data)
     try {
-      await updateProject(data)
+      await updateProject(project, data)
       toast.success('Les informations ont été enregistrées avec succès !')
     } catch (error) {
       toast.error(`Une erreur est survenue lors de l'enregistrement des informations' ${String(error)}`)
