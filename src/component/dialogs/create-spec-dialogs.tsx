@@ -1,84 +1,83 @@
 'use client'
 
 import { JSX, useState } from 'react'
-import { IStep3 } from '@/types/interfaces'
 
 interface Props {
   projectId: string
 }
 
-export default function CreateSpecDialog ({ projectId }: Props): JSX.Element {
-  const [spec, setSpec] = useState<IStep3>({
-    id: '',
-    titreSpec: '',
-    contexte: '',
-    objectifs: '',
-    acteurs: '',
-    description: '',
-    conditionsSucces: '',
-    preConditions: '',
-    etapesFlux: '',
-    scenariosErreurs: '',
-    scenariosAlternatifs: '',
-    reglesGestion: '',
-    interfaceUxUi: '',
-    casTests: '',
-    postCondition: '',
-    status: 'draft'
-  })
-
-  const handleChange = (field: keyof IStep3, value: string): void => {
-    setSpec((prev: any) => ({ ...prev, [field]: value }))
-  }
+export default function GenerateSpecDialog ({ projectId }: Props): JSX.Element {
+  const [title, setTitle] = useState('')
+  const [context, setContext] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [success, setSuccess] = useState(false)
 
   const handleSubmit = async (): Promise<void> => {
+    setLoading(true)
+    setError(null)
+    setSuccess(false)
+
     try {
-      const res = await fetch('/api/specs', {
+      const res = await fetch('/api/specs/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ projectId, spec })
+        body: JSON.stringify({ projectId, title, context })
       })
 
       if (!res.ok) {
         const err = await res.json()
-        console.error('Erreur:', err.error)
+        setError(err.error !== null && err.error !== undefined ? err.error : 'Erreur inconnue')
         return
       }
 
       const data = await res.json()
-      console.log('Spécification ajoutée avec succès', data)
-      alert('Spécification enregistrée avec succès !')
-    } catch (error) {
-      console.error('Erreur requête:', error)
+      console.log('Spécification générée:', data.spec)
+      setSuccess(true)
+    } catch (e) {
+      console.error('Erreur réseau ou serveur', e)
+      setError('Erreur lors de la requête')
+    } finally {
+      setLoading(false)
     }
   }
 
   return (
-    <div className='flex flex-col gap-4 border rounded-lg p-6 shadow-md w-full max-w-4xl'>
-      <h2 className='text-xl font-bold'>Nouvelle Spécification</h2>
+    <div className='flex flex-col gap-4 border rounded-lg p-6 shadow-md w-full max-w-2xl'>
+      <h2 className='text-xl font-bold'>Générer une spécification</h2>
 
-      {Object.entries(spec).map(([key, value]) => {
-        if (key === 'id' || key === 'status') return null
-        return (
-          <div key={key} className='flex flex-col gap-1'>
-            <label htmlFor={key} className='capitalize text-sm font-semibold'>{key}</label>
-            <textarea
-              id={key}
-              value={value as string | number | readonly string[] | undefined}
-              onChange={e => handleChange(key as keyof IStep3, e.target.value)}
-              className='border p-2 rounded'
-              rows={key.length > 12 ? 4 : 2}
-            />
-          </div>
-        )
-      })}
+      <div className='flex flex-col gap-1'>
+        <label htmlFor='title' className='text-sm font-semibold'>Titre de la fonctionnalité</label>
+        <input
+          type='text'
+          id='title'
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          className='border p-2 rounded'
+        />
+      </div>
+
+      <div className='flex flex-col gap-1'>
+        <label htmlFor='context' className='text-sm font-semibold'>Contexte du projet</label>
+        <textarea
+          id='context'
+          value={context}
+          onChange={(e) => setContext(e.target.value)}
+          className='border p-2 rounded'
+          rows={4}
+        />
+      </div>
 
       <button
         onClick={(e) => { void handleSubmit() }}
-        className='bg-blue-600 text-white px-4 py-2 rounded mt-4 self-start'
+        disabled={loading || title === '' || context === ''}
+        className='bg-green-600 text-white px-4 py-2 rounded mt-2 disabled:opacity-50'
       >
-        Enregistrer la spécification
+        {loading ? 'Génération en cours...' : 'Générer la spécification'}
       </button>
+
+      {error !== null && error !== undefined && <p className='text-red-600 font-semibold'>{error}</p>}
+      {success && <p className='text-green-600 font-semibold'>Spécification générée et enregistrée !</p>}
     </div>
   )
 }

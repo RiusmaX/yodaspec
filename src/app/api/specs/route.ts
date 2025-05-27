@@ -17,7 +17,7 @@ export async function POST (req: Request): Promise<Response> {
     await connect()
     console.log('Connexion à la base de données réussie')
     const project = await Project.findById(projectId)
-    if (!project) {
+    if (project === undefined || project === null) {
       return new Response(JSON.stringify({ error: 'Projet non trouvé' }), { status: 404 })
     }
 
