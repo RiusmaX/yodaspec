@@ -7,35 +7,49 @@ import {
   getSpecById,
   saveVerifiedSpec
 } from '@/db/services/project-services'
-import { runIaCheck } from '../'
 
-function hashJson(data: any): string {
+import { runMatchCheck } from '../../db/services/check-services'
+import { Feature, Spec } from '../../types/interface'
+
+function hashJson (data: any): string {
   const jsonString = JSON.stringify(data)
   return createHash('md5').update(jsonString).digest('hex')
 }
 
 export const verifiedSpecAction = async (projectId: string): Promise<boolean> => {
   const enrichedPrompt = await getEnrichedPromptById(projectId)
-  const features = await getFeaturesById(projectId)
-  const specs = await getSpecById(projectId)
+  const features: Feature[] = await getFeaturesById(projectId)
+  const specs: Spec[] = await getSpecById(projectId)
 
-  const hashBefore = hashJson(specs)
+  const result = await runMatchCheck({ features, specs })
 
-  const result = await runIaCheck({
-    enrichedPrompt,
-    expectedFeatures: features,
-    currentSpecs: specs
-  })
+  let isModified = false
+  const modifiedSpecs = []
 
-  const hashAfter = hashJson(result)
-  const isModified = hashBefore !== hashAfter
+  for (let i = 0; i < specs.length; i++) {
+    const originalSpec = specs[i]
+    const updatedSpec = result[i]
+
+    const hashBefore = hashJson(originalSpec)
+    const hashAfter = hashJson(updatedSpec)
+
+    if (hashBefore !== hashAfter) {
+      isModified = true
+      modifiedSpecs.push({
+        index: i,
+        originalSpec,
+        updatedSpec,
+        hashBefore,
+        hashAfter
+      })
+    }
+  }
 
   await saveVerifiedSpec({
     projectId,
     verifiedSpecs: result,
     isModified,
-    hashBefore,
-    hashAfter
+    modifiedSpecs
   })
 
   return isModified

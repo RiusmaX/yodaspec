@@ -1,6 +1,6 @@
 import { GoogleGenAI } from '@google/genai'
-import { CheckResult, IaCheckInput } from '@/types/interface'
-import { CheckPrompts } from '@/prompt/step4/verify-context'
+import { CheckResult, IaCheckInput, Feature, Spec } from '@/types/interface'
+import { verifyContextPrompt, matchFeaturesPrompt } from '@/prompt/step4/verify-context'
 
 // Initialisation de l'API Google GenAI
 const ai = new GoogleGenAI({
@@ -16,7 +16,7 @@ export const runIaChecks = async ({
 
   const results: CheckResult[] = []
 
-  for (const { label, template } of CheckPrompts) {
+  for (const { label, template } of verifyContextPrompt) {
     const promptText = template(context)
 
     const response = await ai.models.generateContent({
@@ -36,16 +36,22 @@ export const runIaChecks = async ({
   return results
 }
 
-// Crée le contexte pour générer un prompt complet
-function createContext (enrichedPrompt: string, features: string[], specs: any[]): string {
-  return `
-==== PROMPT ENRICHI ====
-${enrichedPrompt}
+export const runMatchCheck = async ({
+  features,
+  specs
+}: {
+  features: Feature[]
+  specs: Spec[]
+}): Promise<Spec[]> => {
+  const prompt = matchFeaturesPrompt(features, specs)
 
-==== FONCTIONNALITÉS ====
-${features.map((f, i) => `${i + 1}. ${f}`).join('\n')}
+  const response = await ai.models.generateContent({
+    model: 'gemini-2.0-flash',
+    contents: [{ text: prompt }],
+    config: {
+      responseMimeType: 'application/json'
+    }
+  })
 
-==== SPÉCIFICATIONS ====
-${JSON.stringify(specs, null, 2)}
-`
+  return JSON.parse(response.text || '[]')
 }
