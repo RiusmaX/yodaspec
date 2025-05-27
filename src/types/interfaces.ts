@@ -1,4 +1,8 @@
-export interface ISpecification {
+// types/interfaces.ts
+import { Types } from 'mongoose'
+
+export interface IStep3 {
+  _id?: Types.ObjectId
   id: string
   titreSpec: string
   contexte: string
@@ -18,12 +22,13 @@ export interface ISpecification {
 }
 
 export interface IProject {
+  _id?: Types.ObjectId
   title: string
   description?: string
-  step2: {
+  step2?: {
     features: Array<{
-      relatedTo: string
+      relatedTo: Types.ObjectId | string
     }>
   }
-  step3: ISpecification[]
+  step3?: IStep3[]
 }

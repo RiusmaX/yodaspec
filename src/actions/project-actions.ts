@@ -1,5 +1,5 @@
 import Project from '@/db/models/Project'
-import { IProject } from '@/types/interfaces'
+import { IProject, IStep3 } from '@/types/interfaces'
 import { connect, disconnect } from '@/lib/db'
 import { revalidatePath } from 'next/cache'
 
@@ -11,6 +11,22 @@ const createProject = async (project: IProject): Promise<void> => {
   revalidatePath('/')
   await disconnect()
 }
+
+const createSpec = async (projectId: string, spec: IStep3): Promise<void> => {
+  await connect()
+
+  // Mise à jour du projet existant
+  await Project.findByIdAndUpdate(
+    projectId,
+    { step3: spec },
+    { new: true, runValidators: true }
+  )
+
+  revalidatePath('/')
+  await disconnect()
+}
+
 export {
-  createProject
+  createProject,
+  createSpec
 }
