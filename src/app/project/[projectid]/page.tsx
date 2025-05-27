@@ -12,7 +12,7 @@ async function ProjectHome (props: Readonly<{ params: Promise<{ projectid: strin
   }
   return (
     <div>
-      <h1>projectname</h1>
+      <h1>project name</h1>
       <p>{projectid}</p>
       <h2>{project.title}</h2>
       <p>{project.description}</p>
