@@ -25,31 +25,46 @@ export async function POST (req: Request): Promise<Response> {
     }
 
     const prompt = `
-      Tu es un expert en rédaction de spécifications fonctionnelles pour des projets web.
-      Rédige une spécification complète au format JSON pour la fonctionnalité suivante :
-
-    const titleString: string = title;
+    Tu es un expert en rédaction de spécifications fonctionnelles pour des projets web.
+ 
+    Ta mission est de produire une spécification fonctionnelle complète au format JSON pour la fonctionnalité suivante.
+ 
     Titre de la fonctionnalité : ${String(title)}
-      Contexte du projet : ${String(context)}
-
-      Réponds uniquement en JSON au format suivant :
-      {
-        "titreSpec": "...",
-        "contexte": "...",
-        "objectifs": "...",
-        "acteurs": "...",
-        "description": "...",
-        "conditionsSucces": "...",
-        "preConditions": "...",
-        "etapesFlux": "...",
-        "scenariosErreurs": "...",
-        "scenariosAlternatifs": "...",
-        "reglesGestion": "...",
-        "interfaceUxUi": "...",
-        "casTests": "...",
-        "postCondition": "...",
-        "status": "draft"
-      }
+    Contexte du projet : ${String(context)}
+ 
+    Tu dois structurer ta réponse uniquement au format JSON suivant, sans ajouter de texte en dehors :
+ 
+    {
+      "titreSpec": "Titre clair et concis de la fonctionnalité",
+      "contexte": "Décris le cadre du projet, la situation actuelle, la provenance du besoin (interne/client/utilisateur final)",
+      "objectifs": "Quels sont les objectifs métier ou utilisateurs visés par cette fonctionnalité ? À quoi sert-elle concrètement ?",
+      "acteurs": "Liste les utilisateurs ou systèmes impliqués dans cette fonctionnalité",
+      "description": "Explique la finalité principale de la fonctionnalité, les besoins couverts, son utilité dans le système global",
+      "conditionsSucces": "Quels résultats permettent de considérer la fonctionnalité comme un succès ? (indicateurs, comportement attendu)",
+      "preConditions": [
+        "Liste les conditions nécessaires avant d'utiliser la fonctionnalité (accès, données existantes, permissions, dépendances)"
+      ],
+      "etapesFlux": [
+        "Décris chaque étape du flux normal d’utilisation par l’utilisateur, ainsi que les actions attendues du système à chaque étape"
+      ],
+      "scenariosErreurs": [
+        "Liste les erreurs possibles, leurs causes, et le comportement du système attendu (message, rollback, etc.)"
+      ],
+      "scenariosAlternatifs": "Décris les chemins alternatifs valides (paramètres différents, options, raccourcis, cas particuliers)",
+      "reglesGestion": [
+        "Énonce les règles métier, validations, contraintes de contenu ou de sécurité à respecter"
+      ],
+      "interfaceUxUi": "Précise les éléments d’interface concernés, les interactions utilisateur attendues, les contraintes UX ou design",
+      "casTests": [
+        "Décris quelques cas de test fonctionnels (cas standard, erreurs, cas limites)"
+      ],
+      "postCondition": [
+        "Liste les états du système après exécution (données créées, modifiées, notifications, changements visibles)"
+      ],
+      "status": "draft"
+    }
+ 
+    Sois exhaustif, clair et professionnel. Aucune phrase hors format JSON ne doit apparaître. Toute réponse contennant plus d'une proposition, sépare les par des virgules et surtout pas en tableau de tableau.
     `
 
     const response = await ai.models.generateContent({

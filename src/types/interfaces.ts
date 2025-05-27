@@ -10,14 +10,14 @@ export interface IStep3 {
   acteurs: string
   description: string
   conditionsSucces: string
-  preConditions: string
-  etapesFlux: string
-  scenariosErreurs: string
+  preConditions: string[]
+  etapesFlux: string[]
+  scenariosErreurs: string[]
   scenariosAlternatifs: string
-  reglesGestion: string
+  reglesGestion: string[]
   interfaceUxUi: string
-  casTests: string
-  postCondition: string
+  casTests: string[]
+  postCondition: string[]
   status: string
 }
 
