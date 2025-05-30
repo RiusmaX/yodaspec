@@ -6,19 +6,23 @@ export interface IProject {
   updateAt?: Date
 }
 
-export interface IScenarioAlternatifExport {
-  Nom: string
+export interface IAlternativeScenario {
+  Name: string
   Description: string
-  'Résultat attendu': string[]
+  Expected_Result: string[]
 }
-export interface ISpecificationExport {
-  Nom: string
+
+export interface Ifeature {
+  _id?: string
+  Name: string
   Description: string
-  Objectifs: string
-  'Conditione succès': string
-  Acteurs: string[]
+  Goal: string
+  Success_Condition: string
+  Actors: string[]
   Preconditions: string[]
-  'Etapes de flux': string[]
+  Main_Flow_Steps: string[]
   Postconditions: string[]
-  'Scénario alternatif': IScenarioAlternatifExport[]
+  Alternative_Scenarios: IAlternativeScenario[]
+  // Update to match your database - can be string or ObjectId
+  idProject: string | import('mongoose').Types.ObjectId
 }

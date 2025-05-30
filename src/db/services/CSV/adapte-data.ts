@@ -1,28 +1,22 @@
 
-import { ISpecificationExport, IScenarioAlternatifExport } from '@/types/interfaces'
+import { Ifeature, IAlternativeScenario } from '@/types/interfaces'
 
-// Fonction qui adapte les données brutes (rawData) au format conforme à l'interface ISpecificationExport
-const adaptData = (rawData: any[]): ISpecificationExport[] => {
+const adaptData = (rawData: any[]): Ifeature[] => {
   return rawData.map(d => ({
-    // Copie directe des propriétés simples
-    Nom: d.Nom,
+    Name: d.Name,
     Description: d.Description,
-    // Renommage de la clé "Objectif" en "Objectifs" pour correspondre à l'interface cible
-    Objectifs: d.Objectif,
-    // Renommage de la clé "Condition_de_succes" en "Conditione succès"
-    'Conditione succès': d.Condition_de_succes,
-    // Copie directe des tableaux
-    Acteurs: d.Acteurs,
+    Goal: d.Goal,
+    Success_Condition: d.Success_Condition,
+    Actors: d.Actors,
     Preconditions: d.Preconditions,
-    'Etapes de flux': d.Etapes_de_flux,
+    Main_Flow_Steps: d.Main_Flow_Steps,
     Postconditions: d.Postconditions,
-
-    // Transformation du tableau des scénarios alternatifs en respectant l'interface IScenarioAlternatifExport
-    'Scénario alternatif': (d.Scenarios_alternatifs ?? []).map((s: any): IScenarioAlternatifExport => ({
-      Nom: s.Nom,
+    Alternative_Scenarios: (d.Alternative_Scenarios ?? []).map((s: any): IAlternativeScenario => ({
+      Name: s.Name,
       Description: s.Description,
-      'Résultat attendu': s.Resultat_attendu
-    }))
+      Expected_Result: s.Expected_Result
+    })),
+    idProject: d.idProject
   }))
 }
 
