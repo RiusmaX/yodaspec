@@ -6,7 +6,7 @@ import Project from '../models/project'
 const getProjects = async (): Promise<IProject[]> => {
   await connect()
   try {
-    const projects = await (Project as Model<IProject>).find().lean().exec()
+    const projects = await (Project as Model<IProject>).find({}).lean().exec()
     return projects
   } catch (error) {
     console.error(error)
@@ -29,7 +29,4 @@ const getProjectById = async (projectId: string): Promise<IProject | null> => {
   }
 }
 
-export {
-  getProjects,
-  getProjectById
-}
+export { getProjects, getProjectById }

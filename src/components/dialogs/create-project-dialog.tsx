@@ -1,20 +1,10 @@
 'use client'
-
 import { Button } from '@/components/ui/button'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger
-} from '@/components/ui/dialog'
-import { Input } from '@/components/ui/input'
+import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger, DialogFooter, DialogHeader } from '@/components/ui/dialog'
 import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
-import { IProject } from '@/types/interfaces'
+import { Input } from '@/components/ui/input'
 import { useState } from 'react'
+import { IProject } from '@/types/interfaces'
 import { Loader2 } from 'lucide-react'
 import { toast } from 'react-toastify'
 
@@ -23,7 +13,7 @@ function CreateProjectDialog ({
 }: Readonly<{
   createProject: (project: IProject) => Promise<void>
 }>): React.ReactNode {
-  const [projectData, setProjectData] = useState<IProject>({
+  const [projectData, setProjectData] = useState({
     title: '',
     description: ''
   })
@@ -50,7 +40,7 @@ function CreateProjectDialog ({
         <DialogHeader>
           <DialogTitle>Créer un projet</DialogTitle>
           <DialogDescription>
-            Remplissez les champs ci-dessous pour créer un nouveau projet.
+            Remplissez les informations ci-dessous pour créer un projet.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={(e) => { void handleSubmit(e) }}>
@@ -70,21 +60,16 @@ function CreateProjectDialog ({
               <Label htmlFor='username' className='text-right'>
                 Description
               </Label>
-              <Textarea
+              <Input
                 id='username'
                 value={projectData.description}
                 onChange={(e) => setProjectData({ ...projectData, description: e.target.value })}
                 className='col-span-3'
-                rows={4}
               />
             </div>
           </div>
           <DialogFooter>
-            <Button
-              type='submit'
-              className='cursor-pointer'
-              disabled={isLoading}
-            >
+            <Button type='submit' disabled={isLoading}>
               {isLoading ? <Loader2 className='w-4 h-4 mr-2 animate-spin' /> : null}
               Créer le projet
             </Button>
