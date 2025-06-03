@@ -5,6 +5,7 @@ import { connect, disconnect } from '@/lib/db'
 
 const createProject = async (project: IProject): Promise<void> => {
   'use server'
+  console.log('Creating project:', project)
   await connect()
   const _project = new Project(project)
   await _project.save()

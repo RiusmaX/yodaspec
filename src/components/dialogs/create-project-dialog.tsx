@@ -19,16 +19,56 @@ function CreateProjectDialog ({
   })
   const [isLoading, setIsLoading] = useState(false)
 
+  // Fonction pour appeler l'API Gemini
+  const fetchFeaturesFromGemini = async (title: string, description: string): Promise<string[]> => {
+    try {
+      const response = await fetch('/api/gemini-proxy', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ title, description })
+      })
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      const fetchedFeatures = await response.json()
+      return fetchedFeatures
+    } catch (error) {
+      console.error('Erreur lors de l\'appel à l\'API Gemini:', error)
+      throw error
+    }
+  }
+
+  // Fonction pour enregistrer le projet dans la base de données
+  const saveProjectToDB = async (project: IProject): Promise<void> => {
+    try {
+      await createProject(project)
+    } catch (error) {
+      console.error('Erreur lors de l\'enregistrement du projet:', error)
+      throw error
+    }
+  }
+
+  // Fonction pour gérer la soumission du formulaire
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault()
     setIsLoading(true)
     try {
-      await createProject(projectData)
+      const featuresFromGemini = await fetchFeaturesFromGemini(projectData.title, projectData.description)
+
+      const newProject = {
+        ...projectData,
+        features: featuresFromGemini // Format parfait, pas de transformation
+      }
+
+      await saveProjectToDB(newProject)
       toast.success('Projet créé avec succès')
     } catch (error) {
       toast.error(`Une erreur est survenue lors de la création du projet: ${String(error)}`)
+    } finally {
+      setIsLoading(false)
     }
-    setIsLoading(false)
   }
 
   return (
