@@ -1,18 +1,15 @@
+export interface IFeature {
+  feature: string // Nom de la fonctionnalité (correspond à Gemini)
+  description: string // Description (correspond à Gemini)
+  createdAt?: Date
+  updatedAt?: Date
+}
+
 export interface IProject {
   _id?: string
   title: string
   description: string
-  createdAt?: Date
-  updatedAt?: Date
-  step2: {
-    features: IFeature[]
-  }
-}
-
-export interface IFeature {
-  _id: string
-  name: string
-  description: string
+  features?: IFeature[]
   createdAt?: Date
   updatedAt?: Date
 }
