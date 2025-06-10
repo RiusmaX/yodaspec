@@ -7,7 +7,7 @@ const ai = new GoogleGenAI({
 })
 
 const generatePrompt = (title: string, description: string): string => {
-  return `Génère une liste de fonctionnalités dans l'ordre de priorité décroissante pour un projet du nom de "${title}" et qui va permettre de faire "${description}". Chaque fonctionnalité doit être décrite en une phrase concise.`
+  return `Génère une liste de fonctionnalités dans l'ordre de priorité décroissante pour un projet du nom de "${title}" et qui va permettre de faire "${description}". Chaque fonctionnalité doit être décrite en une phrase concise. Utilise le principe MOSCoW pour prioriser les fonctionnalités : Must have, Should have, Could have, Won't have. La réponse doit être au format JSON avec un tableau d'objets contenant "feature" et "description".`
 }
 
 export async function POST (request: Request): Promise<NextResponse> {
