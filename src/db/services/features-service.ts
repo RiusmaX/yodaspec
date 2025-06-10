@@ -1,7 +1,7 @@
 import { connect, disconnect } from '@/lib/db'
 import { IFeature } from '@/types/interfaces'
 import { Model } from 'mongoose'
-import { Feature } from '../models/features'
+import Feature from '../models/features'
 
 const getFeatures = async (): Promise<IFeature[]> => {
   await connect()
@@ -29,7 +29,14 @@ const getFeatureById = async (featureId: string): Promise<IFeature | null> => {
   }
 }
 
+const updateSelectedFeatures = async (selection: IFeature[]): Promise<void> => {
+  // exemple minimal : on écrase tout
+  await Feature.deleteMany({})
+  await Feature.insertMany(selection)
+}
+
 export {
   getFeatures,
-  getFeatureById
+  getFeatureById,
+  updateSelectedFeatures
 }

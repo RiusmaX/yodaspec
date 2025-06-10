@@ -10,13 +10,9 @@ export interface IProject {
 }
 
 export interface IFeature {
-  _id?: string
-  title: string
+  _id: string
+  name: string
   description: string
-  status: 'validate' | 'modified' | 'deleted'
   createdAt?: Date
   updatedAt?: Date
-  step2: {
-    features: IProject[]
-  }
 }
