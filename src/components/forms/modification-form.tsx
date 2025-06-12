@@ -11,32 +11,49 @@ import {
   FormMessage
 } from '../ui/form'
 import { Textarea } from '../ui/textarea'
+import { JSX, useEffect, useState } from 'react'
 import { IProject } from '@/types/interfaces'
 import { toast } from 'react-toastify'
 import { updateProject } from '@/actions/project-actions'
-import { JSX } from 'react'
+import { Loader2 } from 'lucide-react'
 
 // Composant de formulaire pour la modification de l'introduction générée
 // Permet à l'utilisateur de modifier et valider l'introduction proposée par l'IA
-export function ModificationForm ({ project, introduction }: { project: IProject, introduction: string }): JSX.Element {
+export function ModificationForm ({ project, introduction, onUpdate }: { project: IProject, introduction: string, onUpdate: (newIntro: string) => void }): JSX.Element {
   // Initialisation du formulaire avec l'introduction existante ou une valeur vide
+  const [isLoading, setIsLoading] = useState(false)
   const form = useForm<IProject>({
     mode: 'onBlur',
     defaultValues: {
       step1: {
-        final_introduction: project.step1?.final_introduction ?? ''
+        ...project?.step1, // On garde les autres valeurs du step1
+        final_introduction: introduction // On utilise l'introduction passée en prop
       }
     }
   })
 
+  useEffect(() => {
+    form.reset({
+      step1: {
+        ...project?.step1,
+        final_introduction: introduction
+      }
+    })
+  }, [introduction, project?.step1, form])
+
   // Gestion de la soumission du formulaire et mise à jour de l'introduction
   const onSubmit = async (data: IProject): Promise<void> => {
-    console.log('Form submitted:', data)
+    setIsLoading(true)
     try {
       await updateProject(project, data)
-      toast.success('L\'introduction a été enregistrées avec succès !')
+      if (data.step1?.final_introduction !== undefined && data.step1.final_introduction !== '') {
+        onUpdate(data.step1.final_introduction)
+        toast.success('L\'introduction a été enregistrée avec succès !')
+      }
     } catch (error) {
       toast.error(`Une erreur est survenue lors de l'enregistrement de l'introduction' ${String(error)}`)
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -60,7 +77,10 @@ export function ModificationForm ({ project, introduction }: { project: IProject
           )}
         />
 
-        <Button type='submit'>Valider</Button>
+        <Button type='submit' disabled={isLoading}>
+          {isLoading ? <Loader2 className='w-4 h-4 mr-2 animate-spin' /> : null}
+          Valider
+        </Button>
       </form>
     </Form>
   )

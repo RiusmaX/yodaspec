@@ -23,8 +23,9 @@ import { ModificationForm } from './modification-form'
 export function ContextForm ({ project }: { project: IProject }): JSX.Element {
   // Gestion des états pour le chargement et le contenu généré
   const [isLoading, setIsLoading] = useState(false)
-  const [introGenerated, setIntroGenerated] = useState(false)
-  const [generatedIntro, setGeneratedIntro] = useState<string>('')
+
+  const [introGenerated, setIntroGenerated] = useState(Boolean(project?.step1?.final_introduction?.length))
+  const [generatedIntro, setGeneratedIntro] = useState<string>(project?.step1?.final_introduction ?? '')
 
   // Initialisation du formulaire avec les données existantes du projet ou des valeurs vides
   const form = useForm<IProject>({
@@ -63,18 +64,20 @@ export function ContextForm ({ project }: { project: IProject }): JSX.Element {
 
       const result = await response.json()
 
+      setGeneratedIntro(result.final_introduction)
+      setIntroGenerated(true)
+
       // Mise à jour du projet avec l'introduction générée
-      await updateProject(project, {
+      const updatedProject = {
         ...data,
         step1: {
           ...data.step1,
           final_introduction: result.final_introduction
         }
-      })
+      }
 
+      await updateProject(project, updatedProject)
       toast.success('L\'introduction a été générée avec succès !')
-      setGeneratedIntro(result.final_introduction)
-      setIntroGenerated(true)
     } catch (error) {
       toast.error(`Une erreur est survenue lors de l'enregistrement des informations' ${String(error)}`)
     } finally {
@@ -84,7 +87,7 @@ export function ContextForm ({ project }: { project: IProject }): JSX.Element {
 
   return (
     <Form {...form}>
-      <form onSubmit={(e) => { void form.handleSubmit(onSubmit)(e) }} className='space-y-6'>
+      <form onSubmit={(e) => { void form.handleSubmit(onSubmit)(e) }} className='space-y-6 min-w-[600px]'>
         <FormField
           control={form.control}
           name='step1.current_situation'
@@ -210,7 +213,14 @@ export function ContextForm ({ project }: { project: IProject }): JSX.Element {
         </Button>
       </form>
       {introGenerated && (
-        <ModificationForm project={project} introduction={generatedIntro} />
+        <div className='mt-6'>
+          <h2 className='text-lg font-semibold mb-4'>Introduction générée</h2>
+          <ModificationForm
+            project={project}
+            introduction={generatedIntro}
+            onUpdate={(newIntro) => setGeneratedIntro(newIntro)}
+          />
+        </div>
       )}
     </Form>
   )
