@@ -2,15 +2,25 @@ export interface IProject {
   _id?: string
   title: string
   description: string
-  step1?: object
-  step2?: object
-  step3?: object
-  step4?: object
-  step5?: object
-  step6?: object
+  step1?: Step1 // idée brute + questions
+  step2?: Step2
+  step3?: Step3
+  step4?: object // à définir
+  step5?: object // à définir
+  step6?: object // à définir
   createdAt?: Date
   updatedAt?: Date
+}
 
+export interface Step1 {
+  enrichedPrompt: string // Contexte enrichi du projet
+
+}
+export interface Step2 {
+  features: Feature[] // Liste validée par l’humain après découpage
+}
+export interface Step3 {
+  specs: Spec[] // Les spécifications à valider et enrichir
 }
 export interface IaCheckInput {
   features: string[] // ex : ["Créer tâche", "Supprimer tâche"]

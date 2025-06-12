@@ -1,10 +1,11 @@
 import { GoogleGenAI } from '@google/genai'
-import { Feature, Spec } from '@/types/interface'
+import { Feature, Spec, Step1, Step2, Step3 } from '@/types/interface'
 import { matchFeaturesPrompt } from '@/prompt/step4/match-features'
 import { CheckContextPrompt } from '@/prompt/step4/check-context'
 import { coverageFeaturesPrompt } from '@/prompt/step4/coverage-features'
 import { similarSpecsPrompt } from '@/prompt/step4/similar-specs'
 import { verifySpecStructurePrompt } from '@/prompt/step4/check-format'
+import { getProjectById } from './project-services'
 
 // Initialisation de l'API Google GenAI
 const ai = new GoogleGenAI({
@@ -30,30 +31,26 @@ const getResponse = async ({ prompt }: { prompt: string }): Promise<Spec[]> => {
 
 // Fonction principale d'appel aux différents traitements
 
-export const runAllIaChecks = async ({
-  enrichedPrompt,
-  features,
-  specs
-}: {
-  enrichedPrompt: string
-  features: Feature[]
-  specs: Spec[]
-}): Promise<Spec[]> => {
-  let currentSpecs = specs
+export const runAllIaChecks = async (projectId: string): Promise<Spec[]> => {
+  const project = await getProjectById(projectId)
+  if (project == null) throw new Error('Projet introuvable')
 
+  const enrichedPrompt = (project.step1 as Step1)?.enrichedPrompt ?? ''
+  const features: Feature[] = (project.step2 as Step2)?.features ?? []
+  const specs: Spec[] = (project.step3 as Step3)?.specs ?? []
+
+  let currentSpecs = specs
   // Étape 1 : valid_context / is_modified
   currentSpecs = await runCheckContext({ enrichedContext: enrichedPrompt, specs: currentSpecs })
 
   // Étape 2 : matched_features
   currentSpecs = await runMatchCheck({ features, specs: currentSpecs })
-
+  // Étape 3 : coverage_features
   currentSpecs = await runCoverageCheck({ features, specs: currentSpecs })
-
+  // Étape 4 : similar_specs
   currentSpecs = await runSimilarCheck({ specs: currentSpecs })
-
+  // Étape 5 : verify_spec_structure
   currentSpecs = await runStructureCheck({ specs: currentSpecs })
-
-  // Tu pourras ajouter d'autres traitements ici si besoin (ex : clarté, lisibilité...)
 
   return currentSpecs
 }
