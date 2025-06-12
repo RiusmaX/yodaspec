@@ -37,11 +37,11 @@ function Stepper ({ stepId, onNext, onPrev, onReset }: Readonly<{ stepId?: 'step
         <h2 className='text-lg font-medium'>Progression du projet</h2>
         <div className='flex items-center gap-2'>
           <span className='text-sm text-muted-foreground'>
-            Etape {currentIndex + 1} sur {steps.length}
+            Étape {currentIndex + 1} sur {steps.length}
           </span>
           <div />
         </div>
-        <div className='space-y-4'>
+        <div className='space-y-4 min-w-[200px] flex justify-end'>
           {!stepper.isLast
             ? (
               <div className='flex justify-end gap-4'>
