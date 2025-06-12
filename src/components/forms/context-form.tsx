@@ -38,6 +38,31 @@ export function ContextForm ({ project }: { project: IProject }): JSX.Element {
     try {
       await updateProject(project, data)
       toast.success('Les informations ont été enregistrées avec succès !')
+
+      const response = await fetch('/api/gemini-proxy', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data.step1)
+      })
+
+      if (!response.ok) {
+        throw new Error('Erreur lors de la génération de l\'introduction')
+      }
+
+      const result = await response.json()
+
+      // Mise à jour du projet avec l'introduction générée
+      await updateProject(project, {
+        ...data,
+        step1: {
+          ...data.step1,
+          final_introduction: result.final_introduction
+        }
+      })
+
+      toast.success('L\'introduction a été générée avec succès !')
     } catch (error) {
       toast.error(`Une erreur est survenue lors de l'enregistrement des informations' ${String(error)}`)
     }

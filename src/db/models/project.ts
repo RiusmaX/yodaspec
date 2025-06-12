@@ -13,35 +13,35 @@ const ProjectSchema = new Schema<IProject>({
   step1: {
     current_situation: {
       type: String,
-      required: true
+      required: false
     },
     problematic: {
       type: String,
-      required: true
+      required: false
     },
     goal: {
       type: String,
-      required: true
+      required: false
     },
     actors: {
       type: String,
-      required: true
+      required: false
     },
     target_users: {
       type: String,
-      required: true
+      required: false
     },
     scope_included: {
       type: String,
-      required: true
+      required: false
     },
     scope_excluded: {
       type: String,
-      required: true
+      required: false
     },
     final_introduction: {
       type: String,
-      required: true
+      required: false
     }
   }
 
