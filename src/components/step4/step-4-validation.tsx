@@ -20,10 +20,6 @@ export default function Step4Validation ({
     try {
       const modification = await verifiedSpecAction(projectId)
 
-      // Rechargement du projet après mise à jour si besoin (optionnel)
-      const response = await fetch(`/api/project/${projectId}`)
-      const updatedProject = await response.json()
-      setResults(updatedProject.step4 ?? null)
       setModificationDetected(modification)
     } catch (err: any) {
       setError(
