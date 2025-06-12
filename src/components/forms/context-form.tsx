@@ -11,12 +11,15 @@ import {
   FormMessage
 } from '../ui/form'
 import { Textarea } from '../ui/textarea'
-import { JSX } from 'react'
+import { JSX, useState } from 'react'
 import { IProject } from '@/types/interfaces'
 import { toast } from 'react-toastify'
 import { updateProject } from '@/actions/project-actions'
+import { ModificationForm } from './modification-form'
 
 export function ContextForm ({ project }: { project: IProject }): JSX.Element {
+  const [introGenerated, setIntroGenerated] = useState(false)
+  const [generatedIntro, setGeneratedIntro] = useState<string>('')
   const form = useForm<IProject>({
     mode: 'onBlur',
     defaultValues: {
@@ -63,6 +66,8 @@ export function ContextForm ({ project }: { project: IProject }): JSX.Element {
       })
 
       toast.success('L\'introduction a été générée avec succès !')
+      setGeneratedIntro(result.final_introduction)
+      setIntroGenerated(true)
     } catch (error) {
       toast.error(`Une erreur est survenue lors de l'enregistrement des informations' ${String(error)}`)
     }
@@ -192,6 +197,9 @@ export function ContextForm ({ project }: { project: IProject }): JSX.Element {
 
         <Button type='submit'>Valider</Button>
       </form>
+      {introGenerated && (
+        <ModificationForm project={project} introduction={generatedIntro} />
+      )}
     </Form>
   )
 }
