@@ -1,8 +1,10 @@
 
 import { Ifeature } from '@/types/interfaces'
 import { unparse } from 'papaparse'
+import * as XLSX from 'xlsx'
+// import sendEmail from '../resend'
 
-export const ProjectCSV = (projects: Ifeature[]): void => {
+export const ProjectCSV = async (projects: Ifeature[]): Promise<void> => {
   const rows = projects.flatMap(project => {
     const scenarios = project.Alternative_Scenarios
     return (scenarios.length > 0 ? scenarios : [null]).map((scenario) => ({
@@ -21,15 +23,27 @@ export const ProjectCSV = (projects: Ifeature[]): void => {
   })
 
   const csv = unparse(rows)
-  // const BOM = '\uFEFF'
-  // const blob = new Blob([BOM, csv], { type: 'text/csv;charset=utf-8;' })
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
+  const blob = new Blob(['\uFEFF', csv], { type: 'text/csv;charset=utf-8;' })
   const url = URL.createObjectURL(blob)
+
+  const date = new Date().toISOString().split('T')[0]
+  const filename = `projects-[${date}].csv`
+
+  // Création et téléchargement CSV
   const link = document.createElement('a')
   link.href = url
-  link.setAttribute('download', 'projects.csv')
+  link.setAttribute('download', filename)
   document.body.appendChild(link)
   link.click()
   document.body.removeChild(link)
   URL.revokeObjectURL(url)
+
+  // Création fichier XLSX (écriture locale uniquement ici)
+  const worker = XLSX.utils.json_to_sheet(rows)
+  const workbook = XLSX.utils.book_new()
+  XLSX.utils.book_append_sheet(workbook, worker, 'Projects')
+  XLSX.writeFile(workbook, `projects-[${date}].xlsx`)
+
+  // Appel email (pas de pièce jointe encore ici)
+  // await sendEmail()
 }

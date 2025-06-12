@@ -49,14 +49,15 @@
 // export default Step6
 'use client'
 
-import React, { useEffect, useState } from 'react'
-import { usePathname } from 'next/navigation'
+import React, { useEffect, useState, Suspense } from 'react'
+import { usePathname, redirect } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { FileDown } from 'lucide-react'
 import { ProjectCSV } from '@/db/services/CSV/project-CSV'
 import { adaptData } from '@/db/services/CSV/adapte-data'
 import ProjectRadio from '@/components/Radio/projects-Radio'
 import { Ifeature } from '@/types/interfaces'
+import Loading from '../loading'
 
 interface ApiResponse {
   success: boolean
@@ -81,7 +82,6 @@ function Step6 (): React.ReactElement {
 
   const fetchFeatures = async (projectId: string): Promise<void> => {
     if (exportFormat !== 'csv') return
-
     try {
       const res = await fetch(`/api/route?projectId=${encodeURIComponent(projectId)}`)
       const response: ApiResponse = await res.json()
@@ -105,6 +105,7 @@ function Step6 (): React.ReactElement {
       if (exportFormat === 'csv') {
         const adapted = adaptData(features)
         await ProjectCSV(adapted)
+        redirect('/')
       } else {
         console.log('PDF export à faire')
       }
@@ -129,7 +130,9 @@ function Step6 (): React.ReactElement {
             {isExporting ? 'Export...' : 'Exporter'}
           </Button>
         </div>
-        <p className='mt-2 text-xs'>Features trouvées : {features.length}</p>
+        <Suspense fallback={<Loading />}>
+          <p className='mt-2 text-xs'>Features trouvées : {features.length}</p>
+        </Suspense>
       </div>
     </div>
   )
