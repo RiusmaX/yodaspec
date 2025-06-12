@@ -1,6 +1,14 @@
 import { IProject } from '@/types/interfaces'
 import mongoose, { Schema } from 'mongoose'
 
+const FeatureSchema = new Schema({
+  feature: { type: String, required: true },
+  description: { type: String, required: true },
+  priority: { type: mongoose.Schema.Types.Mixed }, // Accepte string ou number
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now }
+}, { _id: false })
+
 const ProjectSchema = new Schema<IProject>({
   title: {
     type: String,
@@ -43,8 +51,8 @@ const ProjectSchema = new Schema<IProject>({
       type: String,
       required: false
     }
-  }
-
+  },
+  features: [FeatureSchema],
 }, {
   timestamps: true
 })

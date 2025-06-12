@@ -22,8 +22,8 @@
     "net"
   ],
   "workbench.colorCustomizations": {
-    "activityBar.background": "#422710",
-    "titleBar.activeBackground": "#5C3716",
+    "activityBar.background": "#fff",
+    "titleBar.activeBackground": "#000000",
     "titleBar.activeForeground": "#FDFBF8"
   }
 }
