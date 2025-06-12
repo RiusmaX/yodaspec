@@ -11,27 +11,39 @@ import {
   FormMessage
 } from '../ui/form'
 import { Textarea } from '../ui/textarea'
-import { JSX } from 'react'
+import { JSX, useEffect } from 'react'
 import { IProject } from '@/types/interfaces'
 import { toast } from 'react-toastify'
 import { updateProject } from '@/actions/project-actions'
 
-export function ModificationForm ({ project, introduction }: { project: IProject, introduction: string }): JSX.Element {
+export function ModificationForm ({ project, introduction, onUpdate }: { project: IProject, introduction: string, onUpdate: (newIntro: string) => void }): JSX.Element {
   const form = useForm<IProject>({
     mode: 'onBlur',
     defaultValues: {
       step1: {
-        final_introduction: ''
+        ...project?.step1, // On garde les autres valeurs du step1
+        final_introduction: introduction // On utilise l'introduction passée en prop
       }
     }
   })
 
+  useEffect(() => {
+    form.reset({
+      step1: {
+        ...project?.step1,
+        final_introduction: introduction
+      }
+    })
+  }, [introduction, project?.step1, form])
+
   // Gestion de l'envoi du formulaire
   const onSubmit = async (data: IProject): Promise<void> => {
-    console.log('Form submitted:', data)
     try {
       await updateProject(project, data)
-      toast.success('L\'introduction a été enregistrées avec succès !')
+      if (data.step1?.final_introduction !== undefined && data.step1.final_introduction !== '') {
+        onUpdate(data.step1.final_introduction)
+        toast.success('L\'introduction a été enregistrée avec succès !')
+      }
     } catch (error) {
       toast.error(`Une erreur est survenue lors de l'enregistrement de l'introduction' ${String(error)}`)
     }

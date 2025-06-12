@@ -5,11 +5,14 @@ import { redirect } from 'next/navigation'
 async function ProjectHome (props: Readonly<{ params: Promise<{ projectId: string }> }>): Promise<React.ReactNode> {
   const { projectId } = await props.params
 
-  const project = await getProjectById(projectId)
+  const projectData = await getProjectById(projectId)
 
-  if (project == null) {
+  if (projectData == null) {
     return redirect('/')
   }
+
+  // Sérialisation de l'objet MongoDB en objet simple
+  const project = JSON.parse(JSON.stringify(projectData))
 
   return (
     <div className='flex flex-col gap-4'>
