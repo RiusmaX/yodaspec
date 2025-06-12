@@ -23,20 +23,22 @@ function CreateProjectDialog ({
 }: Readonly<{
   createProject: (project: IProject) => Promise<void>
 }>): React.ReactNode {
+  // État pour les données du projet et le statut de chargement
   const [projectData, setProjectData] = useState<IProject>({
     title: '',
     description: ''
   })
   const [isLoading, setIsLoading] = useState(false)
 
+  // Gestion de la soumission du formulaire et création du projet
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault()
     setIsLoading(true)
     try {
       await createProject(projectData)
-      toast.success('Projet créé avec succès')
+      toast.success('Projet créé avec succès !')
     } catch (error) {
-      toast.error(`Une erreur est survenue lors de la création du projet: ${String(error)}`)
+      toast.error(`Une erreur est survenue lors de la création du projet : ${String(error)}`)
     }
     setIsLoading(false)
   }
@@ -75,7 +77,7 @@ function CreateProjectDialog ({
                 value={projectData.description}
                 onChange={(e) => setProjectData({ ...projectData, description: e.target.value })}
                 className='col-span-3'
-                rows={4}
+                rows={6}
               />
             </div>
           </div>
