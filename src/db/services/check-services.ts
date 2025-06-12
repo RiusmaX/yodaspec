@@ -1,5 +1,5 @@
 import { GoogleGenAI } from '@google/genai'
-import { Feature, Spec, Step1, Step2, Step3, ValidatedSpec } from '@/types/interface'
+import { Feature, Spec, ValidatedSpec } from '@/types/interface'
 import { matchFeaturesPrompt } from '@/prompt/step4/match-features'
 import { CheckContextPrompt } from '@/prompt/step4/check-context'
 import { coverageFeaturesPrompt } from '@/prompt/step4/coverage-features'
@@ -35,9 +35,9 @@ export const runAllIaChecks = async (projectId: string): Promise<ValidatedSpec[]
   const project = await getProjectById(projectId)
   if (project == null) throw new Error('Projet introuvable')
 
-  const enrichedPrompt = (project.step1 as Step1)?.enrichedPrompt ?? ''
-  const features: Feature[] = (project.step2 as Step2)?.features ?? []
-  const specs: Spec[] = (project.step3 as Step3)?.specs ?? []
+  const enrichedPrompt: string = project.step1 ?? ''
+  const features: Feature[] = project.step2 ?? []
+  const specs: Spec[] = project.step3 ?? []
 
   let currentSpecs = specs
   // Étape 1 : valid_context / is_modified
@@ -52,7 +52,7 @@ export const runAllIaChecks = async (projectId: string): Promise<ValidatedSpec[]
   // Étape 5 : verify_spec_structure
   currentSpecs = await runStructureCheck({ specs: currentSpecs })
 
-  return currentSpecs
+  return currentSpecs as ValidatedSpec[]
 }
 
 // Fonction pour vérifier la cohérence des spécifications avec le contexte enrichi

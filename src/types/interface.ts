@@ -2,7 +2,7 @@ export interface IProject {
   _id?: string
   title: string
   description: string
-  step1?: String // idée brute + questions
+  step1?: string // idée brute + questions
   step2?: Feature[] // Liste des fonctionnalités
   step3?: Spec[] // Spécifications à valider
   step4?: ValidatedSpec [] // à définir
