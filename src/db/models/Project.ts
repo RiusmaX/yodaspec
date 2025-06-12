@@ -4,7 +4,7 @@ import { IProject } from '@/types/interfaces'
 const ProjectSchema = new Schema<IProject>({
   title: { type: String, required: true },
   description: { type: String },
-  step3: { type: Schema.Types.Mixed }
+  step3: [{ type: Schema.Types.Mixed }]
 }, {
   timestamps: true
 })

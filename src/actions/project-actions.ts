@@ -15,10 +15,10 @@ const createProject = async (project: IProject): Promise<void> => {
 const createSpec = async (projectId: string, spec: IStep3): Promise<void> => {
   await connect()
 
-  // Mise à jour du projet existant
+  // Mise à jour du projet existant en ajoutant la nouvelle spécification
   await Project.findByIdAndUpdate(
     projectId,
-    { step3: spec },
+    { $push: { step3: spec } },
     { new: true, runValidators: true }
   )
 
