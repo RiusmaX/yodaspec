@@ -22,7 +22,7 @@ async function ProjectHome (props: Readonly<{ params: { projectId: string } }>):
       
       <Button
         asChild
-        className='inline-block px-6 py-2 mt-4 text-white bg-secondary rounded-lg hover:bg-secondary/70 transition text-center'
+
       >
         <a href={`/project/${projectId}/features`}>
           Spécifications fonctionnelles
