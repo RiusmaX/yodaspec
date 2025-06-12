@@ -19,30 +19,7 @@ export async function GET (request: Request): Promise<NextResponse> {
     ],
     config: {
       responseMimeType: 'application/json'
-      // responseSchema: {
-      //   type: Type.OBJECT,
-      //   properties: {
-      //     title: {
-      //       type: Type.STRING,
-      //       description: 'Le titre de l\'histoire'
-      //     },
-      //     content: {
-      //       type: Type.STRING,
-      //       description: 'Le contenu de l\'histoire'
-      //     },
-      //     characters: {
-      //       type: Type.ARRAY,
-      //       description: 'Les personnages de l\'histoire',
-      //       items: {
-      //         type: Type.OBJECT,
-      //         properties: {
-      //           name: { type: Type.STRING, description: 'Le nom du personnage' },
-      //           description: { type: Type.STRING, description: 'La description du personnage' }
-      //         }
-      //       }
-      //     }
-      //   }
-      // }
+
     }
   })
 

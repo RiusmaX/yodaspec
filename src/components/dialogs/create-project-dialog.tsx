@@ -20,7 +20,31 @@ import { toast } from 'react-toastify'
 function CreateProjectDialog ({ createProject }: Readonly<{ createProject: (project: IProject) => Promise<void> }>): React.ReactNode {
   const [projectData, setProjectData] = useState({
     title: '',
-    description: ''
+    description: '',
+    step1: 'Contexte enrichi simulé pour test',
+    step2: [
+      { title: 'Inscription', description: 'Permet aux utilisateurs de s’inscrire' },
+      { title: 'Connexion', description: 'Connexion sécurisée avec JWT' }
+    ],
+    step3: [
+      {
+        titreSpec: 'Formulaire d’inscription',
+        contexte: 'Page web pour inscrire un utilisateur',
+        objectifs: 'Créer un compte utilisateur',
+        acteurs: ['Utilisateur'],
+        description: 'Le formulaire comporte email, mot de passe, confirmation.',
+        conditionsSucces: 'Le compte est créé et connecté automatiquement.',
+        preConditions: 'Aucun utilisateur connecté',
+        etapesFlux: ['Remplir formulaire', 'Valider', 'Redirection'],
+        scenariosErreurs: ['Email déjà utilisé', 'Mot de passe trop faible'],
+        scenariosAlternatifs: ['Connexion avec Google'],
+        reglesGestion: ['Email unique', 'Longueur minimale du mot de passe'],
+        interfaceUxUi: 'Simple et responsive',
+        casTests: ['Créer un compte avec succès', 'Erreur d’email'],
+        postCondition: 'Utilisateur connecté',
+        status: 'brouillon'
+      }
+    ]
   })
 
   const [isLoading, setisLoading] = useState(false)
