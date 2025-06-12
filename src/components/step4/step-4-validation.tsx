@@ -19,11 +19,10 @@ export default function Step4Validation ({
     setError(null)
     try {
       const {hasAnyModification, enrichedSpecs} = await verifiedSpecAction(projectId)
-console.log('enrichedSpecs :>> ', enrichedSpecs);
+
       setResults(enrichedSpecs)
       setModificationDetected(hasAnyModification)
     } catch (err: any) {
-      console.log('error :>> ', error);
       setError(
         typeof err?.message === 'string' ? err.message : 'Erreur inconnue'
       )
