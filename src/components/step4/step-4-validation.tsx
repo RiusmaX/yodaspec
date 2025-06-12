@@ -18,7 +18,7 @@ export default function Step4Validation ({
     setLoading(true)
     setError(null)
     try {
-      const {hasAnyModification, enrichedSpecs} = await verifiedSpecAction(projectId)
+      const { hasAnyModification, enrichedSpecs } = await verifiedSpecAction(projectId)
 
       setResults(enrichedSpecs)
       setModificationDetected(hasAnyModification)
