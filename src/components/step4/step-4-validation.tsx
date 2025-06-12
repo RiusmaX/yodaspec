@@ -1,30 +1,33 @@
 'use client'
 
 import { useState } from 'react'
-import { runAllIaChecks } from '@/db/services/check-services'
 import { ValidatedSpec } from '@/types/interface'
+import { verifiedSpecAction } from '@/app/actions/check-actions'
 
 export default function Step4Validation ({
   projectId
 }: {
   projectId: string
-
 }): React.ReactElement {
   const [loading, setLoading] = useState(false)
   const [results, setResults] = useState<ValidatedSpec[] | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [modificationDetected, setModificationDetected] = useState<boolean | null>(null)
 
   const handleRunChecks = async (): Promise<void> => {
     setLoading(true)
     setError(null)
     try {
-      const res = await runAllIaChecks(projectId)
-      setResults(res)
+      const modification = await verifiedSpecAction(projectId)
+
+      // Rechargement du projet après mise à jour si besoin (optionnel)
+      const response = await fetch(`/api/project/${projectId}`)
+      const updatedProject = await response.json()
+      setResults(updatedProject.step4 ?? null)
+      setModificationDetected(modification)
     } catch (err: any) {
       setError(
-        typeof err === 'object' && err !== null && 'message' in err && typeof (err as { message?: unknown }).message === 'string'
-          ? (err as { message: string }).message
-          : 'Erreur inconnue'
+        typeof err?.message === 'string' ? err.message : 'Erreur inconnue'
       )
     } finally {
       setLoading(false)
@@ -53,9 +56,17 @@ export default function Step4Validation ({
         </button>
       </div>
 
-      {error == null && <p className='text-red-500'>Erreur : {error}</p>}
+      {error != null && <p className='text-red-500'>Erreur : {error}</p>}
 
-      {(results != null) && (
+      {modificationDetected !== null && (
+        <p className='text-sm'>
+          {modificationDetected
+            ? '✔️ Modifications détectées et enregistrées.'
+            : '✅ Aucune modification détectée. Spécifications déjà cohérentes.'}
+        </p>
+      )}
+
+      {results != null && (
         <div>
           <h3 className='text-lg font-semibold mt-4'>Résultat de la vérification :</h3>
           <pre className='bg-gray-100 p-4 rounded text-sm max-h-[500px] overflow-y-auto'>

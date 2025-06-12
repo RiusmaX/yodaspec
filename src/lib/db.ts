@@ -20,7 +20,7 @@ if (typeof process.env.MONGODB_APP !== 'string' || process.env.MONGODB_APP.lengt
   throw new Error('MONGODB_APP must be set')
 }
 
-const MONGODB_URI = `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@${process.env.MONGODB_HOST}/${process.env.MONGODB_PARAMS}&appName=${process.env.MONGODB_APP_NAME}`
+const MONGODB_URI = `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@${process.env.MONGODB_HOST}/${process.env.MONGODB_PARAMS}&appName=${process.env.MONGODB_APP}`
 
 const clientOptions: ConnectOptions = {
   serverApi: {
