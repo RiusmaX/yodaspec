@@ -27,13 +27,13 @@ export function ContextForm ({ project }: { project: IProject }): JSX.Element {
     mode: 'onBlur',
     defaultValues: {
       step1: {
-        current_situation: '',
-        problematic: '',
-        goal: '',
-        actors: '',
-        target_users: '',
-        scope_included: '',
-        scope_excluded: ''
+        current_situation: project.step1?.current_situation ?? '',
+        problematic: project.step1?.problematic ?? '',
+        goal: project.step1?.goal ?? '',
+        actors: project.step1?.actors ?? '',
+        target_users: project.step1?.target_users ?? '',
+        scope_included: project.step1?.scope_included ?? '',
+        scope_excluded: project.step1?.scope_excluded ?? ''
       }
     }
   })

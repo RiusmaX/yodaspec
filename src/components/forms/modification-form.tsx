@@ -11,17 +11,17 @@ import {
   FormMessage
 } from '../ui/form'
 import { Textarea } from '../ui/textarea'
-import { JSX } from 'react'
 import { IProject } from '@/types/interfaces'
 import { toast } from 'react-toastify'
 import { updateProject } from '@/actions/project-actions'
+import { JSX } from 'react'
 
 export function ModificationForm ({ project, introduction }: { project: IProject, introduction: string }): JSX.Element {
   const form = useForm<IProject>({
     mode: 'onBlur',
     defaultValues: {
       step1: {
-        final_introduction: ''
+        final_introduction: project.step1?.final_introduction ?? ''
       }
     }
   })
