@@ -9,7 +9,10 @@ function hashJson (data: any): string {
   return createHash('md5').update(JSON.stringify(data)).digest('hex')
 }
 
-export const verifiedSpecAction = async (projectId: string): Promise<boolean> => {
+export const verifiedSpecAction = async (projectId: string): Promise<{
+  hasAnyModification: boolean
+  enrichedSpecs: ValidatedSpec[]
+}> => {
   const project = await getProjectById(projectId)
   if (project == null) throw new Error('Projet introuvable')
 
@@ -32,5 +35,5 @@ export const verifiedSpecAction = async (projectId: string): Promise<boolean> =>
 
   await updateProjectStep4(projectId, enrichedSpecs)
 
-  return hasAnyModification
+  return {hasAnyModification, enrichedSpecs}
 }

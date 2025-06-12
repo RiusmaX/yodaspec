@@ -18,14 +18,12 @@ export default function Step4Validation ({
     setLoading(true)
     setError(null)
     try {
-      const modification = await verifiedSpecAction(projectId)
-
-      // Rechargement du projet après mise à jour si besoin (optionnel)
-      const response = await fetch(`/api/project/${projectId}`)
-      const updatedProject = await response.json()
-      setResults(updatedProject.step4 ?? null)
-      setModificationDetected(modification)
+      const {hasAnyModification, enrichedSpecs} = await verifiedSpecAction(projectId)
+console.log('enrichedSpecs :>> ', enrichedSpecs);
+      setResults(enrichedSpecs)
+      setModificationDetected(hasAnyModification)
     } catch (err: any) {
+      console.log('error :>> ', error);
       setError(
         typeof err?.message === 'string' ? err.message : 'Erreur inconnue'
       )
