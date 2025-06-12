@@ -11,12 +11,15 @@ import {
   FormMessage
 } from '../ui/form'
 import { Textarea } from '../ui/textarea'
-import { JSX } from 'react'
+import { JSX, useState } from 'react'
 import { IProject } from '@/types/interfaces'
 import { toast } from 'react-toastify'
 import { updateProject } from '@/actions/project-actions'
+import { Loader2 } from 'lucide-react'
 
 export function ContextForm ({ project }: { project: IProject }): JSX.Element {
+  const [isLoading, setIsLoading] = useState(false)
+
   const form = useForm<IProject>({
     mode: 'onBlur',
     defaultValues: {
@@ -34,7 +37,7 @@ export function ContextForm ({ project }: { project: IProject }): JSX.Element {
 
   // Gestion de l'envoi du formulaire
   const onSubmit = async (data: IProject): Promise<void> => {
-    console.log('Form submitted:', data)
+    setIsLoading(true)
     try {
       await updateProject(project, data)
       toast.success('Les informations ont été enregistrées avec succès !')
@@ -65,6 +68,8 @@ export function ContextForm ({ project }: { project: IProject }): JSX.Element {
       toast.success('L\'introduction a été générée avec succès !')
     } catch (error) {
       toast.error(`Une erreur est survenue lors de l'enregistrement des informations' ${String(error)}`)
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -190,7 +195,10 @@ export function ContextForm ({ project }: { project: IProject }): JSX.Element {
           )}
         />
 
-        <Button type='submit'>Valider</Button>
+        <Button type='submit' disabled={isLoading}>
+          {isLoading ? <Loader2 className='w-4 h-4 mr-2 animate-spin' /> : null}
+          Valider
+        </Button>
       </form>
     </Form>
   )
