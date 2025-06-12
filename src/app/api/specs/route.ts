@@ -5,7 +5,7 @@ import Project from '@/db/models/Project'
 import { Types } from 'mongoose'
 
 export async function POST (req: Request): Promise<Response> {
-  console.log('Requête reçue sur /api/specs') // <= AJOUTE ÇA
+  console.log('Requête reçue sur /api/specs')
   try {
     const { projectId, spec } = await req.json()
     console.log('ID reçu:', projectId)
@@ -26,7 +26,7 @@ export async function POST (req: Request): Promise<Response> {
 
     return new Response(JSON.stringify({ message: 'Spec ajoutée', project }), { status: 200 })
   } catch (error) {
-    console.error('Erreur dans /api/specs:', error) // <= AJOUTE ÇA
+    console.error('Erreur dans /api/specs:', error)
 
     console.error(error)
     return new Response(JSON.stringify({ error: 'Erreur serveur' }), { status: 500 })

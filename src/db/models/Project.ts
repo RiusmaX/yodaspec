@@ -14,7 +14,7 @@ const ProjectSchema = new Schema<IProject>({
       }
     ]
   },
-  step3: [{ type: Schema.Types.Mixed }]
+  step3: { type: Schema.Types.Mixed }
 }, {
   timestamps: true
 })

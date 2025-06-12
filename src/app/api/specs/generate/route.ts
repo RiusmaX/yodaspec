@@ -45,7 +45,7 @@ export async function POST (req: Request): Promise<Response> {
         "Liste les conditions nécessaires avant d'utiliser la fonctionnalité (accès, données existantes, permissions, dépendances)"
       ],
       "etapesFlux": [
-        "Décris chaque étape du flux normal d’utilisation par l’utilisateur, ainsi que les actions attendues du système à chaque étape"
+        "Décris chaque étape du flux normal d'utilisation par l'utilisateur, ainsi que les actions attendues du système à chaque étape"
       ],
       "scenariosErreurs": [
         "Liste les erreurs possibles, leurs causes, et le comportement du système attendu (message, rollback, etc.)"
@@ -54,7 +54,7 @@ export async function POST (req: Request): Promise<Response> {
       "reglesGestion": [
         "Énonce les règles métier, validations, contraintes de contenu ou de sécurité à respecter"
       ],
-      "interfaceUxUi": "Précise les éléments d’interface concernés, les interactions utilisateur attendues, les contraintes UX ou design",
+      "interfaceUxUi": "Précise les éléments d'interface concernés, les interactions utilisateur attendues, les contraintes UX ou design",
       "casTests": [
         "Décris quelques cas de test fonctionnels (cas standard, erreurs, cas limites)"
       ],
@@ -75,6 +75,9 @@ export async function POST (req: Request): Promise<Response> {
 
     const spec = JSON.parse(String(response.text))
 
+    if (!project.step3) {
+      project.step3 = []
+    }
     project.step3.push(spec)
     await project.save()
 
