@@ -1,6 +1,5 @@
-import { Button } from '@/components/ui/button'
+import { ContextForm } from '@/components/forms/context-form'
 import { getProjectById } from '@/db/services/project-service'
-import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
 async function ProjectHome (props: Readonly<{ params: Promise<{ projectId: string }> }>): Promise<React.ReactNode> {
@@ -12,13 +11,14 @@ async function ProjectHome (props: Readonly<{ params: Promise<{ projectId: strin
     return redirect('/')
   }
 
+  // Sérialisation de l'objet MongoDB en objet simple
+  const project = JSON.parse(JSON.stringify(projectData))
+
   return (
     <div className='flex flex-col gap-4'>
-      <h1 className='text-2xl font-bold'>Project {projectData.title}</h1>
-      <p className='text-sm text-fray-500'>{projectData.description}</p>
-      <Button asChild>
-        <Link href={`/project/${projectId}/step1`}>Aller à l'étape 1</Link>
-      </Button>
+      <h1 className='text-2xl font-bold'>Project {project.title}</h1>
+      <p className='text-sm text-fray-500'>{project.description}</p>
+      <ContextForm project={project} />
     </div>
   )
 }
