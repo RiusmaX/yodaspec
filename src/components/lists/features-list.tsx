@@ -5,6 +5,7 @@ import { useCallback, useMemo, useState } from 'react'
 import ValidationBar from '../validation/validation-bar'
 import { ClientFeature } from '@/types/interfaces'
 import { updateSelectedFeatures } from '@/actions/feature-actions'
+import { Button } from '../ui/button'
 
 function FeaturesList ({
   projectId,
@@ -25,6 +26,7 @@ function FeaturesList ({
   )
   const [formatLog, setFormatLog] = useState<string>('')
 
+  // Fonction pour basculer la sélection d'une fonctionnalité
   const toggle = (id: string): void => {
     setSelected((prev) => ({
       ...prev,
@@ -32,6 +34,7 @@ function FeaturesList ({
     }))
   }
 
+  // Fonction pour éditer une fonctionnalité
   const handleEdit = (
     id: string,
     newValues: { feature: string, description: string }
@@ -41,6 +44,7 @@ function FeaturesList ({
     )
   }
 
+  // Fonction pour ajouter une nouvelle fonctionnalité
   const handleAddFeature = (): void => {
     if (newFeature.feature.trim() === '') return
     const id = `${Date.now()}-${Math.random()}`
@@ -49,21 +53,25 @@ function FeaturesList ({
     setNewFeature({ feature: '', description: '' })
     setShowAdd(false)
   }
-  const handleValidate = useCallback(() => {
-    setIsValidating(true)
-    sendAndFormatFeatures(editedFeatures, projectId)
-      .catch((error) => {
-        console.error('Erreur lors de la validation des fonctionnalités:', error)
-        setFormatLog('Erreur lors de la validation des fonctionnalités')
-      })
-      .finally(() => setIsValidating(false))
-  }, [editedFeatures, projectId])
 
+  // Sélection des fonctionnalités actuellement sélectionnées
   const selection = useMemo(
     () => editedFeatures.filter((f) => selected[f._id]),
     [selected, editedFeatures]
   )
 
+  // Fonction pour valider les fonctionnalités sélectionnées
+  const handleValidate = useCallback(() => {
+    setIsValidating(true)
+    sendAndFormatFeatures(selection, projectId)
+      .catch((error) => {
+        console.error('Erreur lors de la validation des fonctionnalités:', error)
+        setFormatLog('Erreur lors de la validation des fonctionnalités')
+      })
+      .finally(() => setIsValidating(false))
+  }, [selection, projectId])
+
+  // Fonction pour envoyer les fonctionnalités à Gemini et les formater
   async function sendAndFormatFeatures (features: ClientFeature[], projectId: string): Promise<void> {
     setFormatLog('Début de la requête Gemini pour formatage...')
     console.log('[Gemini] Envoi des features à formater:', features)
@@ -94,11 +102,14 @@ function FeaturesList ({
     setEditedFeatures(formatted)
     setSelected(Object.fromEntries(formatted.map((f) => [f._id, true])))
   }
+
+  // Fonction pour sauvegarder la sélection de fonctionnalités
   async function saveFeatureSelection (selection: ClientFeature[], projectId: string): Promise<void> {
   // Conversion ClientFeature -> IFeature (on enlève _id)
     const featuresToSave = selection.map(({ feature, description }) => ({ feature, description }))
     await updateSelectedFeatures(projectId, featuresToSave)
   }
+
   return (
     <div className='flex flex-col gap-4'>
       <div className='flex justify-between items-center mb-2'>
@@ -162,15 +173,7 @@ function FeaturesList ({
           </button>
         </div>
       )}
-      <div className='flex flex-row gap-2 mb-2'>
-        <button
-          className='bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition-colors'
-          disabled={isValidating}
-          onClick={handleValidate}
-        >
-          Mettre en forme
-        </button>
-      </div>
+
       <ScrollArea className='h-[80hv] gap-4'>
         <div className='flex flex-col gap-2 '>
           {(formattedFeatures ?? editedFeatures).map((feature: ClientFeature) => (
@@ -185,13 +188,24 @@ function FeaturesList ({
         </div>
       </ScrollArea>
       {formatLog !== '' && <div className='text-xs text-blue-600'>{formatLog}</div>}
-      <ValidationBar
-        disabled={selection.length === 0 || isValidating}
-        onValidate={async () => {
-          await saveFeatureSelection(selection, projectId)
+
+      <div className='flex flex-row justify-between gap-2 mb-2'>
+        <Button
+          variant='outline'
+          disabled={isValidating}
+          onClick={handleValidate}
+        >
+          Mettre en forme
+        </Button>
+        <ValidationBar
+          disabled={selection.length === 0 || isValidating}
+          onValidate={async () => {
+            await saveFeatureSelection(selection, projectId)
           // Ajouter la logique de navigation
-        }}
-      />
+          }}
+        />
+      </div>
+
     </div>
   )
 }

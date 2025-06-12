@@ -21,7 +21,7 @@ export default function ValidationBar ({
   }
 
   return (
-    <Button className='w-full' disabled={disabled} onClick={handleClick}>
+    <Button className='w-32' disabled={disabled} onClick={handleClick}>
       Valider
     </Button>
   )
