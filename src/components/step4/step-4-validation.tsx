@@ -64,13 +64,74 @@ export default function Step4Validation ({
       )}
 
       {results != null && (
-        <div className='mt-6'>
-          <h3 className='text-lg font-semibold mb-2'>Résultat de la vérification :</h3>
-          <div className='bg-zinc-900 text-green-300 rounded-lg p-4 text-sm font-mono overflow-auto max-h-[600px] whitespace-pre-wrap border border-zinc-700 shadow'>
-            <code>
-              {JSON.stringify(results, null, 2)}
-            </code>
-          </div>
+        <div className='mt-6 space-y-6'>
+          <h3 className='text-lg font-semibold'>Résultat de la vérification :</h3>
+
+          {results.map((spec, index) => (
+            <div
+              key={index}
+              className='bg-white rounded-lg shadow border border-gray-200 p-4 space-y-2'
+            >
+              <div className='flex items-center justify-between'>
+                <h4 className='text-md text-black font-bold'>{spec.titreSpec}</h4>
+                {spec.is_modified && (
+                  <span className='bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded-full'>
+                    ✏️ Modifiée par IA
+                  </span>
+                )}
+              </div>
+
+              <p className='text-sm text-gray-600'>
+                <span className='font-semibold'>Contexte :</span> {spec.contexte}
+              </p>
+              <p className='text-sm text-gray-600'>
+                <span className='font-semibold'>Objectifs :</span> {spec.objectifs}
+              </p>
+
+              <div className='grid grid-cols-2 gap-4 mt-2'>
+                <div>
+                  <p className='text-xs text-gray-500 font-semibold mb-1'>Préconditions</p>
+                  <ul className='list-disc list-inside text-sm text-gray-700'>
+                    {Array.isArray(spec.preConditions)
+                      ? spec.preConditions.map((item, i) => (
+                        <li key={i}>{item}</li>
+                      ))
+                      : spec.preConditions}
+                  </ul>
+                </div>
+                <div>
+                  <p className='text-xs text-gray-500 font-semibold mb-1'>Étapes du flux</p>
+                  <ul className='list-disc list-inside text-sm text-gray-700'>
+                    {spec.etapesFlux?.map((item, i) => (
+                      <li key={i}>{item}</li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div>
+                  <p className='text-xs text-gray-500 font-semibold mb-1'>Scénarios d’erreurs</p>
+                  <ul className='list-disc list-inside text-sm text-red-600'>
+                    {spec.scenariosErreurs?.map((item, i) => (
+                      <li key={i}>{item}</li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div>
+                  <p className='text-xs text-gray-500 font-semibold mb-1'>Règles de gestion</p>
+                  <ul className='list-disc list-inside text-sm text-gray-700'>
+                    {spec.reglesGestion?.map((item, i) => (
+                      <li key={i}>{item}</li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+
+              <p className='text-sm text-gray-600'>
+                <span className='font-semibold'>Postcondition :</span> {spec.postCondition}
+              </p>
+            </div>
+          ))}
         </div>
       )}
     </div>
