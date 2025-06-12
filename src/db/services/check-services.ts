@@ -47,6 +47,12 @@ export const runAllIaChecks = async ({
   // Étape 2 : matched_features
   currentSpecs = await runMatchCheck({ features, specs: currentSpecs })
 
+  currentSpecs = await runCoverageCheck({ features, specs: currentSpecs })
+
+  currentSpecs = await runSimilarCheck({ specs: currentSpecs })
+
+  currentSpecs = await runStructureCheck({ specs: currentSpecs })
+
   // Tu pourras ajouter d'autres traitements ici si besoin (ex : clarté, lisibilité...)
 
   return currentSpecs
@@ -103,10 +109,8 @@ export const runSimilarCheck = async ({
 
 // Fonction pour vérifier la structure du json
 export const runStructureCheck = async ({
-  features,
   specs
 }: {
-  features: Feature[]
   specs: Spec[]
 }): Promise<Spec[]> => {
   const prompt = verifySpecStructurePrompt(specs)
