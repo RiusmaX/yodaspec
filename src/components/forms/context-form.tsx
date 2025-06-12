@@ -83,7 +83,7 @@ export function ContextForm ({ project }: { project: IProject }): JSX.Element {
 
   return (
     <Form {...form}>
-      <form onSubmit={(e) => { void form.handleSubmit(onSubmit)(e) }} className='space-y-6'>
+      <form onSubmit={(e) => { void form.handleSubmit(onSubmit)(e) }} className='space-y-6 min-w-[600px]'>
         <FormField
           control={form.control}
           name='step1.current_situation'

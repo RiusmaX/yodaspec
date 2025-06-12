@@ -11,12 +11,15 @@ import {
   FormMessage
 } from '../ui/form'
 import { Textarea } from '../ui/textarea'
-import { JSX, useEffect } from 'react'
+import { JSX, useEffect, useState } from 'react'
 import { IProject } from '@/types/interfaces'
 import { toast } from 'react-toastify'
 import { updateProject } from '@/actions/project-actions'
+import { Loader2 } from 'lucide-react'
 
 export function ModificationForm ({ project, introduction, onUpdate }: { project: IProject, introduction: string, onUpdate: (newIntro: string) => void }): JSX.Element {
+  const [isLoading, setIsLoading] = useState(false)
+
   const form = useForm<IProject>({
     mode: 'onBlur',
     defaultValues: {
@@ -38,6 +41,7 @@ export function ModificationForm ({ project, introduction, onUpdate }: { project
 
   // Gestion de l'envoi du formulaire
   const onSubmit = async (data: IProject): Promise<void> => {
+    setIsLoading(true)
     try {
       await updateProject(project, data)
       if (data.step1?.final_introduction !== undefined && data.step1.final_introduction !== '') {
@@ -46,6 +50,8 @@ export function ModificationForm ({ project, introduction, onUpdate }: { project
       }
     } catch (error) {
       toast.error(`Une erreur est survenue lors de l'enregistrement de l'introduction' ${String(error)}`)
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -69,7 +75,10 @@ export function ModificationForm ({ project, introduction, onUpdate }: { project
           )}
         />
 
-        <Button type='submit'>Valider</Button>
+        <Button type='submit' disabled={isLoading}>
+          {isLoading ? <Loader2 className='w-4 h-4 mr-2 animate-spin' /> : null}
+          Valider
+        </Button>
       </form>
     </Form>
   )
