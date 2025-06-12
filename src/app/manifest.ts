@@ -3,11 +3,11 @@ import { MetadataRoute } from 'next'
 export default function manifest (): MetadataRoute.Manifest {
   return {
     name: 'Yodaspec',
-    short_name: 'Yoda',
+    short_name: 'Yodaspec',
     start_url: '/',
     display: 'standalone',
-    background_color: '#fff',
-    theme_color: '#fff',
+    background_color: '#ffffff',
+    theme_color: '#ffffff',
     icons: [
       { src: '/favicon.ico', sizes: 'any' }
     ]
