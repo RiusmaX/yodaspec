@@ -1,31 +1,26 @@
-
 export interface IProject {
   _id?: string
   title: string
   description: string
-  step5?: Ifeature[]
-  createAt?: Date
-  updateAt?: Date
+  step5?: IFeature[]
+  createdAt?: Date
+  updatedAt?: Date
 }
-
 
 export interface IStage {
   Name: string
   Description: string
-  Expected_Result: string[]
+  'Expected Result': string[]
 }
 
-export interface Ifeature {
-  _id?: string
+export interface IFeature {
   Name: string
   Description: string
-  Goal: string
-  Success_Condition: string
+  Objective: string
+  'Success Conditions': string
   Actors: string[]
   Preconditions: string[]
-  Main_Flow_Steps: string[]
+  'Flow Steps': string[]
   Postconditions: string[]
-  Alternative_Scenarios: IStage[]
-  // Update to match your database - can be string or ObjectId
-  idProject: string | import('mongoose').Types.ObjectId
+  'Alternative Scenario': IStage[]
 }

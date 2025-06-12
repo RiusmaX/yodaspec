@@ -1,7 +1,8 @@
-import { connect, disconnect } from '@/lib/db'
-import { Model } from 'mongoose'
-import Project from '@/db/models/project'
+
 import { IProject } from '@/types/interfaces'
+import { connect, disconnect } from '@/lib/db'
+import Project from '../models/project'
+import { Model } from 'mongoose'
 
 const getProjects = async (): Promise<IProject[]> => {
   await connect()
@@ -16,21 +17,16 @@ const getProjects = async (): Promise<IProject[]> => {
     await disconnect()
   }
 }
-
-const getProjectById = async (projectid: string): Promise<IProject | null> => {
+const getOneProject = async (projectId: string): Promise<IProject | null> => {
   await connect()
   try {
-    const project = await (Project as Model<IProject>).findById(projectid).lean().exec()
+    const project = await (Project as Model<IProject>).findById(projectId).lean().exec()
     return project
   } catch (error) {
-    console.error('Error fetching project by ID:', error)
     return null
   } finally {
     await disconnect()
   }
 }
 
-export {
-  getProjects,
-  getProjectById
-}
+export { getProjects, getOneProject }

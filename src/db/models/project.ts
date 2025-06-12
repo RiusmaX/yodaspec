@@ -1,5 +1,6 @@
-import mongoose, { model, Schema } from 'mongoose'
+
 import { IProject } from '@/types/interfaces'
+import mongoose, { model, Schema } from 'mongoose'
 
 const ProjectSchema = new Schema<IProject>({
   title: {
@@ -8,10 +9,11 @@ const ProjectSchema = new Schema<IProject>({
   },
   description: {
     type: String,
-    required: false
-  }
-}, {
-  timestamps: true
-})
-const Project = mongoose.models.Project ?? model<IProject>('Project', ProjectSchema)
+    required: true
+  },
+  step5 :[{ type: Schema.Types.Mixed }]
+}, { timestamps: true })
+
+const Project = mongoose.models.Project !== undefined ? mongoose.models.Project : model<IProject>('Project', ProjectSchema)
+
 export default Project

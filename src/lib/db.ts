@@ -1,45 +1,46 @@
 import mongoose, { ConnectOptions } from 'mongoose'
-
-if (typeof process.env.MONGODB_USER_NAME !== 'string' || process.env.MONGODB_USER_NAME.length === 0) {
-  throw new Error('MONGODB_USER_NAME is not difined')
+if (typeof process.env.MONGODB_USERNAME !== 'string' || process.env.MONGODB_USERNAME.length === 0) {
+  throw new Error('MONGODB_USERNAME is not defined in environment variables')
 }
-if (typeof process.env.MONGODB_PASSWORD_NAME !== 'string' || process.env.MONGODB_PASSWORD_NAME.length === 0) {
-  throw new Error('MONGODB_USER_NAME is not difined')
+if (typeof process.env.MONGODB_PASSWORD !== 'string' || process.env.MONGODB_PASSWORD.length === 0) {
+  throw new Error('MONGODB_PASSWORD is not defined in environment variables')
 }
 if (typeof process.env.MONGODB_HOST !== 'string' || process.env.MONGODB_HOST.length === 0) {
-  throw new Error('MONGODB_USER_NAME is not difined')
+  throw new Error('MONGODB_HOST is not defined in environment variables')
 }
-if (typeof process.env.MONGODB_PARAM !== 'string' || process.env.MONGODB_PARAM.length === 0) {
-  throw new Error('MONGODB_USER_NAME is not difined')
+if (typeof process.env.MONGODB_PARAMS !== 'string' || process.env.MONGODB_PARAMS.length === 0) {
+  throw new Error('MONGODB_PARAMS is not defined in environment variables')
 }
-if (typeof process.env.MONGODB_DB_APP !== 'string' || process.env.MONGODB_DB_APP.length === 0) {
-  throw new Error('MONGODB_USER_NAME is not difined')
+if (typeof process.env.MONGODB_APP !== 'string' || process.env.MONGODB_APP.length === 0) {
+  throw new Error('MONGODB_APP is not defined in environment variables')
 }
-const clientOption: ConnectOptions = {
+
+export const MONGODB_URI = `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@${process.env.MONGODB_HOST}/${process.env.MONGODB_PARAMS}&appName=${process.env.MONGODB_APP}`
+
+const clientOptions: ConnectOptions = {
   serverApi: {
     version: '1',
     strict: true,
     deprecationErrors: true
   }
 }
-const MONGODB_URI = `mongodb+srv://${process.env.MONGODB_USER_NAME}:${process.env.MONGODB_PASSWORD_NAME}@${process.env.MONGODB_HOST}/${process.env.MONGODB_PARAM}&appName=${process.env.MONGODB_DB_APP}`
 
-const connect = async (): Promise<void> => {
-  if (typeof MONGODB_URI !== 'string' || MONGODB_URI.length === 0) {
-    throw new Error('MONGODB_URI is not difined')
-  }
-
+export const connect = async (): Promise<void> => {
   try {
-    await mongoose.connect(MONGODB_URI, clientOption)
-    console.log('connect mongoose')
-  } catch (e) {
-    throw new Error('Failed to connect')
+    await mongoose.connect(MONGODB_URI, clientOptions)
+    console.log('Connected to MongoDB')
+  } catch (error) {
+    console.log('Error connecting to MongoDB', error)
+    throw new Error('Error connecting to MongoDB')
   }
 }
-const disconnect = async (): Promise<void> => {
-  await mongoose.disconnect()
-}
-export {
-  connect,
-  disconnect
+
+export const disconnect = async (): Promise<void> => {
+  try {
+    await mongoose.disconnect()
+    console.log('Disconnected from MongoDB')
+  } catch (error) {
+    console.log('Error disconnecting from MongoDB', error)
+    throw new Error('Error disconnecting from MongoDB')
+  }
 }

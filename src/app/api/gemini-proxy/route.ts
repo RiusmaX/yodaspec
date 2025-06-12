@@ -1,5 +1,6 @@
-import { GoogleGenAI } from '@google/genai'
-import { connect } from '@/lib/db'
+
+import { testPrompts } from '@/prompts/test-prompts'
+import { GoogleGenAI, Type } from '@google/genai'
 import { NextResponse } from 'next/server'
 import { testpromptes } from '@/app/prompts/test-prompts'
 
@@ -13,7 +14,7 @@ export async function GET (request: Request): Promise<NextResponse> {
     model: 'gemini-2.0-flash',
     contents: [
       {
-        text: testpromptes
+        text: testPrompts
       }
     ],
     config: {
@@ -44,8 +45,6 @@ export async function GET (request: Request): Promise<NextResponse> {
       // }
     }
   })
-
-  const result = JSON.parse(String(response.text ?? ''))
-
+  const result = JSON.parse(String(response.text) ?? '{}')
   return NextResponse.json(result)
 }
