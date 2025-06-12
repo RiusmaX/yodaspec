@@ -1,5 +1,5 @@
 import { GoogleGenAI } from '@google/genai'
-import { Feature, Spec, Step1, Step2, Step3 } from '@/types/interface'
+import { Feature, Spec, Step1, Step2, Step3, ValidatedSpec } from '@/types/interface'
 import { matchFeaturesPrompt } from '@/prompt/step4/match-features'
 import { CheckContextPrompt } from '@/prompt/step4/check-context'
 import { coverageFeaturesPrompt } from '@/prompt/step4/coverage-features'
@@ -31,7 +31,7 @@ const getResponse = async ({ prompt }: { prompt: string }): Promise<Spec[]> => {
 
 // Fonction principale d'appel aux différents traitements
 
-export const runAllIaChecks = async (projectId: string): Promise<Spec[]> => {
+export const runAllIaChecks = async (projectId: string): Promise<ValidatedSpec[]> => {
   const project = await getProjectById(projectId)
   if (project == null) throw new Error('Projet introuvable')
 

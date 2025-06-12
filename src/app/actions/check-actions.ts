@@ -1,54 +1,36 @@
 'use server'
 
 import { createHash } from 'crypto'
-import { getEnrichedPromptById } from '@/db/services/prompt-services'
-import { getFeaturesById } from '@/db/services/feature-services'
-import { getSpecById } from '@/db/services/spec-services'
+import { getProjectById, updateProjectStep4 } from '@/db/services/project-services'
+import { runAllIaChecks } from '@/db/services/check-services'
+import { Spec, ValidatedSpec } from '@/types/interface'
 
-import { runAllIaChecks } from '@/db/services/check-services' // ✅ uniquement cette fonction ici
-
-import { Feature, Spec } from '@/types/interface'
-
-// 🔁 Hash JSON pour détecter les modifications
-function hashJson(data: any): string {
+function hashJson (data: any): string {
   return createHash('md5').update(JSON.stringify(data)).digest('hex')
 }
 
 export const verifiedSpecAction = async (projectId: string): Promise<boolean> => {
-  const enrichedPrompt = await getEnrichedPromptById(projectId)
-  const features: Feature[] = await getFeaturesById(projectId)
-  const specs: Spec[] = await getSpecById(projectId)
+  const project = await getProjectById(projectId)
+  if (project == null) throw new Error('Projet introuvable')
 
-  const updatedSpecs = await runAllIaChecks({ enrichedPrompt, features, specs })
+  const originalSpecs: Spec [] = project.step3 ?? []
+  const validatedSpecs: ValidatedSpec[] = await runAllIaChecks(projectId)
 
-  let isModified = false
-  const modifiedSpecs = []
+  let hasAnyModification = false
 
-  for (let i = 0; i < specs.length; i++) {
-    const originalSpec = specs[i]
-    const newSpec = updatedSpecs[i]
+  const enrichedSpecs = validatedSpecs.map((spec, i) => {
+    const original = originalSpecs[i]
+    const isModified = hashJson(original) !== hashJson(spec)
 
-    const hashBefore = hashJson(originalSpec)
-    const hashAfter = hashJson(newSpec)
+    if (isModified) hasAnyModification = true
 
-    if (hashBefore !== hashAfter) {
-      isModified = true
-      modifiedSpecs.push({
-        index: i,
-        originalSpec,
-        updatedSpec: newSpec,
-        hashBefore,
-        hashAfter
-      })
+    return {
+      ...spec,
+      is_modified: isModified
     }
-  }
-
-  await saveVerifiedSpec({
-    projectId,
-    verifiedSpecs: updatedSpecs,
-    isModified,
-    modifiedSpecs
   })
 
-  return isModified
+  await updateProjectStep4(projectId, enrichedSpecs)
+
+  return hasAnyModification
 }

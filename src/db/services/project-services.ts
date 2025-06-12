@@ -1,4 +1,4 @@
-import { IProject } from '@/types/interface'
+import { IProject, ValidatedSpec } from '@/types/interface'
 import { connect, disconnect } from '@/lib/db'
 import Project from '@/db/models/project'
 import { Model } from 'mongoose'
@@ -29,8 +29,26 @@ const getProjectById = async (projectId: string): Promise<IProject | null> => {
   }
 }
 
+const updateProjectStep4 = async (projectId: string, validatedSpecs: ValidatedSpec[]): Promise<void> => {
+  await connect()
+  try {
+    await (Project as Model<IProject>).findByIdAndUpdate(projectId, {
+      $set: {
+        step4: validatedSpecs,
+        updatedAt: new Date()
+      }
+    }).exec()
+  } catch (error) {
+    console.error('Erreur lors de la mise à jour de la step4 :', error)
+    throw new Error('Échec de la mise à jour de la step4')
+  } finally {
+    await disconnect()
+  }
+}
+
 export {
   getProjects,
-  getProjectById
+  getProjectById,
+  updateProjectStep4
 
 }
