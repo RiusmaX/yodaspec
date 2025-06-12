@@ -25,10 +25,5 @@ export interface IProject {
   _id?: Types.ObjectId
   title: string
   description?: string
-  step2?: {
-    features: Array<{
-      relatedTo: Types.ObjectId | string
-    }>
-  }
   step3?: IStep3[]
 }
