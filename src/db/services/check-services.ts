@@ -1,42 +1,67 @@
 import { GoogleGenAI } from '@google/genai'
-import { IaCheckResult, IaCheckInput, Feature, Spec, enrichedContext } from '@/types/interface'
-import { CheckContextPrompt, verifyContextPrompt } from '@/prompt/step4/check-context'
+import { Feature, Spec } from '@/types/interface'
 import { matchFeaturesPrompt } from '@/prompt/step4/match-features'
+import { CheckContextPrompt } from '@/prompt/step4/check-context'
 
 // Initialisation de l'API Google GenAI
 const ai = new GoogleGenAI({
   apiKey: process.env.GEMINI_API_KEY
 })
 
-export const runIaChecks = async ({
+const getResponse = async ({ prompt }: { prompt: string }): Promise<Spec[]> => {
+  const response = await ai.models.generateContent({
+    model: 'gemini-2.0-flash',
+    contents: [{ text: prompt }],
+    config: {
+      responseMimeType: 'application/json'
+    }
+  })
+
+  try {
+    return JSON.parse(response.text ?? '[]')
+  } catch (err) {
+    console.error('Erreur de parsing JSON IA :', response.text)
+    throw new Error('Réponse IA invalide (non-JSON ou mal formée)')
+  }
+}
+
+// Fonction principale d'appel aux différents traitements
+
+export const runAllIaChecks = async ({
   enrichedPrompt,
   features,
   specs
-}: IaCheckInput): Promise<IaCheckResult[]> => {
-  const context = createContext(enrichedPrompt, features, specs)
+}: {
+  enrichedPrompt: string
+  features: Feature[]
+  specs: Spec[]
+}): Promise<Spec[]> => {
+  let currentSpecs = specs
 
-  const results: IaCheckResult[] = []
+  // Étape 1 : valid_context / is_modified
+  currentSpecs = await runCheckContext({ enrichedContext: enrichedPrompt, specs: currentSpecs })
 
-  for (const { label, template } of verifyContextPrompt) {
-    const promptText = template(context)
+  // Étape 2 : matched_features
+  currentSpecs = await runMatchCheck({ features, specs: currentSpecs })
 
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.0-flash',
-      contents: [{ text: promptText }],
-      config: {
-        responseMimeType: 'text/plain'
-      }
-    })
+  // Tu pourras ajouter d'autres traitements ici si besoin (ex : clarté, lisibilité...)
 
-    results.push({
-      promptLabel: label,
-      response: response.text || ''
-    })
-  }
-
-  return results
+  return currentSpecs
 }
 
+// Fonction pour vérifier la cohérence des spécifications avec le contexte enrichi
+export const runCheckContext = async ({
+  enrichedContext,
+  specs
+}: {
+  enrichedContext: string
+  specs: Spec[]
+}): Promise<Spec[]> => {
+  const prompt = CheckContextPrompt(enrichedContext, specs)
+  return await getResponse({ prompt })
+}
+
+// Fonction pour vérifier la correspondance des fonctionnalités avec les spécifications
 export const runMatchCheck = async ({
   features,
   specs
@@ -46,33 +71,5 @@ export const runMatchCheck = async ({
 }): Promise<Spec[]> => {
   const prompt = matchFeaturesPrompt(features, specs)
 
-  const response = await ai.models.generateContent({
-    model: 'gemini-2.0-flash',
-    contents: [{ text: prompt }],
-    config: {
-      responseMimeType: 'application/json'
-    }
-  })
-
-  return JSON.parse(response.text || '[]')
-}
-
-export const runCheckContext = async ({
-  enrichedContext,
-  specs
-}: {
-  enrichedContext: string
-  specs: Spec[]
-}): Promise<Spec[]> => {
-  const prompt = CheckContextPrompt(enrichedContext, specs)
-
-  const response = await ai.models.generateContent({
-    model: 'gemini-2.0-flash',
-    contents: [{ text: prompt }],
-    config: {
-      responseMimeType: 'application/json'
-    }
-  })
-
-  return JSON.parse(response.text || '[]')
+  return await getResponse({ prompt })
 }
