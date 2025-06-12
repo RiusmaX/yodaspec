@@ -22,7 +22,7 @@
     "net"
   ],
   "workbench.colorCustomizations": {
-    "activityBar.background": "#ffffff",
+    "activityBar.background": "#fff",
     "titleBar.activeBackground": "#000000",
     "titleBar.activeForeground": "#FDFBF8"
   }
