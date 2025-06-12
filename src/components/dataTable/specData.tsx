@@ -197,7 +197,7 @@ const SpecData = ({ project, projectId }: SpecDataProps): React.ReactNode => {
                     <tr>
                       <td colSpan={3} className='border border-gray-300 p-6 text-center text-gray-500'>
                         Aucune fonctionnalité. Cliquez sur "Ajouter une spec" pour commencer.
-                    </td>
+                      </td>
                     </tr>
                     )
                   : (
@@ -205,35 +205,35 @@ const SpecData = ({ project, projectId }: SpecDataProps): React.ReactNode => {
                         <tr key={index} className='hover:bg-gray-50'>
                           <td className='border border-gray-300 p-3'>
                             {editingIndex === index
-                          ? (
-                            <Input
+                              ? (
+                                <Input
                               value={editFeature.feature}
                               onChange={(e) => setEditFeature({ ...editFeature, feature: e.target.value })}
                               disabled={isLoading}
                             />
-                            )
-                          : (
-                            <span className='font-medium'>{feature.feature}</span>
-                            )}
+                                )
+                              : (
+                                <span className='font-medium'>{feature.feature}</span>
+                                )}
                           </td>
                           <td className='border border-gray-300 p-3'>
                             {editingIndex === index
-                          ? (
-                            <Textarea
+                              ? (
+                                <Textarea
                               value={editFeature.description}
                               onChange={(e) => setEditFeature({ ...editFeature, description: e.target.value })}
                               rows={2}
                               disabled={isLoading}
                             />
-                            )
-                          : (
-                            <span>{feature.description}</span>
-                            )}
+                                )
+                              : (
+                                <span>{feature.description}</span>
+                                )}
                           </td>
                           <td className='border border-gray-300 p-3'>
                             <div className='flex justify-center gap-2'>
-                          {editingIndex === index
-                            ? (
+                              {editingIndex === index
+                                ? (
                               <>
                                 <Button
                                   onClick={async () => await handleEditFeature(index)}
@@ -252,8 +252,8 @@ const SpecData = ({ project, projectId }: SpecDataProps): React.ReactNode => {
                                   <X className='h-4 w-4' />
                                 </Button>
                               </>
-                              )
-                            : (
+                                  )
+                                : (
                               <>
                                 <Button
                                   onClick={() => startEdit(index, feature)}
@@ -272,8 +272,8 @@ const SpecData = ({ project, projectId }: SpecDataProps): React.ReactNode => {
                                   <Trash2 className='h-4 w-4' />
                                 </Button>
                               </>
-                              )}
-                        </div>
+                                  )}
+                            </div>
                           </td>
                         </tr>
                       ))
