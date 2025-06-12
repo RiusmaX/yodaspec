@@ -35,5 +35,5 @@ export const verifiedSpecAction = async (projectId: string): Promise<{
 
   await updateProjectStep4(projectId, enrichedSpecs)
 
-  return {hasAnyModification, enrichedSpecs}
+  return { hasAnyModification, enrichedSpecs }
 }

@@ -64,11 +64,13 @@ export default function Step4Validation ({
       )}
 
       {results != null && (
-        <div>
-          <h3 className='text-lg font-semibold mt-4'>Résultat de la vérification :</h3>
-          <pre className='bg-gray-100 p-4 rounded text-sm max-h-[500px] overflow-y-auto'>
-            {JSON.stringify(results, null, 2)}
-          </pre>
+        <div className='mt-6'>
+          <h3 className='text-lg font-semibold mb-2'>Résultat de la vérification :</h3>
+          <div className='bg-zinc-900 text-green-300 rounded-lg p-4 text-sm font-mono overflow-auto max-h-[600px] whitespace-pre-wrap border border-zinc-700 shadow'>
+            <code>
+              {JSON.stringify(results, null, 2)}
+            </code>
+          </div>
         </div>
       )}
     </div>
