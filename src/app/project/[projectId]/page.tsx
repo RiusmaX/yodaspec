@@ -2,8 +2,11 @@ import { getOneProject } from '@/db/services/project-service'
 import { redirect } from 'next/navigation'
 import Loading from './loading'
 import { Suspense } from 'react'
+import { connect } from '@/lib/db'
+import Project from '@/db/models/project'
+import { dataExemple } from '@/data-exemple/data'
 
-async function ProjectHome (props: Readonly<{ params: Promise<{ projectId: string }> }>): Promise<React.ReactNode> {
+async function ProjectHome(props: Readonly<{ params: Promise<{ projectId: string }> }>): Promise<React.ReactNode> {
   const { projectId } = await props.params
   const project = await getOneProject(projectId)
   if (project === null) {

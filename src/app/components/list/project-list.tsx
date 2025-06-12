@@ -1,7 +1,7 @@
-import { IProject } from '@/app/types/interfaces'
+import { IProject } from '@/types/interfaces'
 import ProjectCard from './project-card'
 
-function ProjectsList ({ projects }: Readonly<{ projects: IProject[] }>): React.ReactNode {
+function ProjectsList({ projects }: Readonly<{ projects: IProject[] }>): React.ReactNode {
   return (
     <div className='flex flex-col gap-4 w-full'>
       <h1 className='text-xl font-bold'>Projets</h1>

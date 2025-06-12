@@ -1,4 +1,4 @@
-import { IProject } from '@/app/types/interfaces'
+import { IProject } from '@/types/interfaces'
 import { connect, disconnect } from '@/lib/db'
 import Project from '../models/project'
 import { Model } from 'mongoose'

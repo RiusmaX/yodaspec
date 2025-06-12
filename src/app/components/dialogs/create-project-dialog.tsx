@@ -1,5 +1,5 @@
 'use client'
-import { IProject } from '@/app/types/interfaces'
+import { IProject } from '@/types/interfaces'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
@@ -9,21 +9,21 @@ import { Loader2 } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'react-toastify'
 
-function CreateProjectDialog ({ createProject }: Readonly<{ createProject: (project: IProject) => Promise<void> }>): React.ReactNode {
+function CreateProjectDialog({ createProject }: Readonly<{ createProject: (project: IProject) => Promise<void> }>): React.ReactNode {
   const [isLoading, setIsLoading] = useState(false)
   const [projectData, setProjectData] = useState({
     title: '',
     description: ''
   })
 
-  function handleChange (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void {
+  function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void {
     setProjectData({
       ...projectData,
       [e.target.id]: e.target.value
     })
   }
 
-  async function handleSubmit (e: React.FormEvent<HTMLFormElement>): Promise<void> {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>): Promise<void> {
     e.preventDefault()
     setIsLoading(true)
     try {

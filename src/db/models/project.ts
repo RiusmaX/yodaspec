@@ -1,4 +1,4 @@
-import { IProject } from '@/app/types/interfaces'
+import { IProject } from '@/types/interfaces'
 import mongoose, { model, Schema } from 'mongoose'
 
 const ProjectSchema = new Schema<IProject>({
@@ -9,7 +9,8 @@ const ProjectSchema = new Schema<IProject>({
   description: {
     type: String,
     required: true
-  }
+  },
+  step5 :[{ type: Schema.Types.Mixed }]
 }, { timestamps: true })
 
 const Project = mongoose.models.Project !== undefined ? mongoose.models.Project : model<IProject>('Project', ProjectSchema)

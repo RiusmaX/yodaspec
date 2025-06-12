@@ -1,4 +1,4 @@
-import { IProject } from '@/app/types/interfaces'
+import { IProject } from '@/types/interfaces'
 import Project from '@/db/models/project'
 import { connect, disconnect } from '@/lib/db'
 import { revalidatePath } from 'next/cache'

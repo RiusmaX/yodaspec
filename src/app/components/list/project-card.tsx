@@ -1,9 +1,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { IProject } from '@/app/types/interfaces'
+import { IProject } from '@/types/interfaces'
 import { type ReactNode } from 'react'
 import Link from 'next/link'
 
-function ProjectCard ({ project }: Readonly<{ project: IProject }>): ReactNode {
+function ProjectCard({ project }: Readonly<{ project: IProject }>): ReactNode {
   return (
     <Link href={`/project/${String(project._id)}`}>
       <Card className='w-full hover:cursor-pointer'>
