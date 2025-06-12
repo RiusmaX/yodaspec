@@ -2,6 +2,9 @@ import { GoogleGenAI } from '@google/genai'
 import { Feature, Spec } from '@/types/interface'
 import { matchFeaturesPrompt } from '@/prompt/step4/match-features'
 import { CheckContextPrompt } from '@/prompt/step4/check-context'
+import { coverageFeaturesPrompt } from '@/prompt/step4/coverage-features'
+import { similarSpecsPrompt } from '@/prompt/step4/similar-specs'
+import { verifySpecStructurePrompt } from '@/prompt/step4/check-format'
 
 // Initialisation de l'API Google GenAI
 const ai = new GoogleGenAI({
@@ -44,6 +47,12 @@ export const runAllIaChecks = async ({
   // Étape 2 : matched_features
   currentSpecs = await runMatchCheck({ features, specs: currentSpecs })
 
+  currentSpecs = await runCoverageCheck({ features, specs: currentSpecs })
+
+  currentSpecs = await runSimilarCheck({ specs: currentSpecs })
+
+  currentSpecs = await runStructureCheck({ specs: currentSpecs })
+
   // Tu pourras ajouter d'autres traitements ici si besoin (ex : clarté, lisibilité...)
 
   return currentSpecs
@@ -70,6 +79,41 @@ export const runMatchCheck = async ({
   specs: Spec[]
 }): Promise<Spec[]> => {
   const prompt = matchFeaturesPrompt(features, specs)
+
+  return await getResponse({ prompt })
+}
+
+// Fonction pour vérifier que chaque spec couvre au moins une fonctionnalité
+export const runCoverageCheck = async ({
+  features,
+  specs
+}: {
+  features: Feature[]
+  specs: Spec[]
+}): Promise<Spec[]> => {
+  const prompt = coverageFeaturesPrompt(features, specs)
+
+  return await getResponse({ prompt })
+}
+
+// Fonction pour vérifier qu'il n'y ai pas de redondance
+export const runSimilarCheck = async ({
+  specs
+}: {
+  specs: Spec[]
+}): Promise<Spec[]> => {
+  const prompt = similarSpecsPrompt(specs)
+
+  return await getResponse({ prompt })
+}
+
+// Fonction pour vérifier la structure du json
+export const runStructureCheck = async ({
+  specs
+}: {
+  specs: Spec[]
+}): Promise<Spec[]> => {
+  const prompt = verifySpecStructurePrompt(specs)
 
   return await getResponse({ prompt })
 }
