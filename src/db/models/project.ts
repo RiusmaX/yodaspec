@@ -10,16 +10,41 @@ const ProjectSchema = new Schema<IProject>({
     type: String,
     required: false
   },
-  step2: {
-    features: [
-      {
-        relatedTo: {
-          type: Schema.Types.ObjectId,
-          ref: 'Feature'
-        }
-      }
-    ]
+  step1: {
+    current_situation: {
+      type: String,
+      required: false
+    },
+    problematic: {
+      type: String,
+      required: false
+    },
+    goal: {
+      type: String,
+      required: false
+    },
+    actors: {
+      type: String,
+      required: false
+    },
+    target_users: {
+      type: String,
+      required: false
+    },
+    scope_included: {
+      type: String,
+      required: false
+    },
+    scope_excluded: {
+      type: String,
+      required: false
+    },
+    final_introduction: {
+      type: String,
+      required: false
+    }
   }
+
 }, {
   timestamps: true
 })
