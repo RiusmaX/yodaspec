@@ -1,3 +1,5 @@
+// Fonction de modèle pour générer le prompt des spécifications du projet
+// Prend les données du formulaire et retourne un prompt structuré pour la génération par l'IA
 export const step1Prompt = (
   formData: {
     current_situation: string

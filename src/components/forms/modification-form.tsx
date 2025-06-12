@@ -16,7 +16,10 @@ import { toast } from 'react-toastify'
 import { updateProject } from '@/actions/project-actions'
 import { JSX } from 'react'
 
+// Composant de formulaire pour la modification de l'introduction générée
+// Permet à l'utilisateur de modifier et valider l'introduction proposée par l'IA
 export function ModificationForm ({ project, introduction }: { project: IProject, introduction: string }): JSX.Element {
+  // Initialisation du formulaire avec l'introduction existante ou une valeur vide
   const form = useForm<IProject>({
     mode: 'onBlur',
     defaultValues: {
@@ -26,7 +29,7 @@ export function ModificationForm ({ project, introduction }: { project: IProject
     }
   })
 
-  // Gestion de l'envoi du formulaire
+  // Gestion de la soumission du formulaire et mise à jour de l'introduction
   const onSubmit = async (data: IProject): Promise<void> => {
     console.log('Form submitted:', data)
     try {

@@ -18,11 +18,15 @@ import { updateProject } from '@/actions/project-actions'
 import { Loader2 } from 'lucide-react'
 import { ModificationForm } from './modification-form'
 
+// Composant de formulaire pour les informations contextuelles du projet
+// Gère à la fois la soumission du formulaire et la génération de l'introduction par l'IA
 export function ContextForm ({ project }: { project: IProject }): JSX.Element {
+  // Gestion des états pour le chargement et le contenu généré
   const [isLoading, setIsLoading] = useState(false)
-
   const [introGenerated, setIntroGenerated] = useState(false)
   const [generatedIntro, setGeneratedIntro] = useState<string>('')
+
+  // Initialisation du formulaire avec les données existantes du projet ou des valeurs vides
   const form = useForm<IProject>({
     mode: 'onBlur',
     defaultValues: {
@@ -38,7 +42,7 @@ export function ContextForm ({ project }: { project: IProject }): JSX.Element {
     }
   })
 
-  // Gestion de l'envoi du formulaire
+  // Gestion de la soumission du formulaire, mise à jour du projet et génération de l'introduction
   const onSubmit = async (data: IProject): Promise<void> => {
     setIsLoading(true)
     try {

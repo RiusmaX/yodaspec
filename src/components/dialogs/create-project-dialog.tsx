@@ -18,16 +18,21 @@ import { IProject } from '@/types/interfaces'
 import { Loader2 } from 'lucide-react'
 import { toast } from 'react-toastify'
 
+// Composant de dialogue pour la création de nouveaux projets
+// Accepte une fonction createProject en prop qui gère la création du projet
 function CreateProjectDialog ({
   createProject
 }: Readonly<{
   createProject: (project: IProject) => Promise<void>
 }>): React.ReactNode {
+  // État pour les données du projet et le statut de chargement
   const [projectData, setProjectData] = useState<IProject>({
     title: '',
     description: ''
   })
   const [isLoading, setIsLoading] = useState(false)
+
+  // Gestion de la soumission du formulaire et création du projet
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault()
     setIsLoading(true)
