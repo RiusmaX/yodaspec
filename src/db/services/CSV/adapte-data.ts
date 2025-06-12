@@ -1,5 +1,5 @@
 
-import { Ifeature, IAlternativeScenario } from '@/types/interfaces'
+import { Ifeature, IStage } from '@/types/interfaces'
 
 const adaptData = (rawData: any[]): Ifeature[] => {
   return rawData.map(d => ({
@@ -11,7 +11,7 @@ const adaptData = (rawData: any[]): Ifeature[] => {
     Preconditions: d.Preconditions,
     Main_Flow_Steps: d.Main_Flow_Steps,
     Postconditions: d.Postconditions,
-    Alternative_Scenarios: (d.Alternative_Scenarios ?? []).map((s: any): IAlternativeScenario => ({
+    Alternative_Scenarios: (d.Alternative_Scenarios ?? []).map((s: any): IStage => ({
       Name: s.Name,
       Description: s.Description,
       Expected_Result: s.Expected_Result

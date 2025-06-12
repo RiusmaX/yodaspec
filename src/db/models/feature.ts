@@ -1,7 +1,7 @@
 // import mongoose, { model, Schema } from 'mongoose'
-// import { IAlternativeScenario, Ifeature } from '@/types/interfaces'
+// import { IStage, Ifeature } from '@/types/interfaces'
 
-// const AlternativeScenarioSchema = new Schema<IAlternativeScenario>({
+// const AlternativeScenarioSchema = new Schema<IStage>({
 //   Name: {
 //     type: String,
 //     required: true
