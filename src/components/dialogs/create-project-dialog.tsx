@@ -57,9 +57,15 @@ function CreateProjectDialog ({
     try {
       const featuresFromGemini = await fetchFeaturesFromGemini(projectData.title, projectData.description)
 
+      // Formatage des fonctionnalités -> string en objets avec feature et description
+      const featuresFormatted = featuresFromGemini.map((feature: string) => ({
+        feature,
+        description: '' // Utilisation de la même valeur pour la description
+      }))
+
       const newProject = {
         ...projectData,
-        features: featuresFromGemini // Format parfait, pas de transformation
+        features: featuresFormatted // Format parfait, pas de transformation
       }
 
       await saveProjectToDB(newProject)

@@ -1,16 +1,15 @@
 import { connect, disconnect } from '@/lib/db'
-import { IProject } from '@/types/interfaces'
+import { IProject, IFeature } from '@/types/interfaces'
 import { Model } from 'mongoose'
 import Project from '../models/project'
 
 // Récupérer toutes les fonctionnalités (features) de tous les projets
-const getFeatures = async (): Promise<IProject['features']> => {
+const getFeatures = async (): Promise<IFeature[]> => {
   await connect()
   try {
     const projects = await (Project as Model<IProject>).find({}).lean().exec()
-    console.log('Projets récupérés:', projects)
-    const features = projects.flatMap(project => (project.features != null) || [])
-    console.log('Features récupérés:', features)
+    // On récupère toutes les features de tous les projets, on filtre les undefined
+    const features = projects.flatMap(project => project.features ?? [])
     return features
   } catch (error) {
     console.error('Erreur lors de la récupération des fonctionnalités:', error)
@@ -21,16 +20,17 @@ const getFeatures = async (): Promise<IProject['features']> => {
 }
 
 // Récupérer une fonctionnalité spécifique par son ID
-const getFeatureById = async (featureId: string): Promise<IProject['features'][number] | null> => {
+const getFeatureById = async (featureId: string): Promise<IFeature | null> => {
   await connect()
   try {
     const project = await (Project as Model<IProject>).findOne({ 'features._id': featureId }).lean().exec()
-    if (project == null) {
+    if (project == null || !project.features) {
       console.error(`Aucun projet contenant la fonctionnalité avec l'ID ${featureId} trouvé.`)
       return null
     }
-    const feature = ((project.features?.find(f => f._id.toString() === featureId)) != null) || null
-    return feature
+    // On cherche la feature par son _id (si elle existe)
+    const feature = project.features.find(f => (f as any)._id && (f as any)._id.toString() === featureId)
+    return feature ?? null
   } catch (error) {
     console.error('Erreur lors de la récupération de la fonctionnalité:', error)
     return null
@@ -40,34 +40,34 @@ const getFeatureById = async (featureId: string): Promise<IProject['features'][n
 }
 
 // Récupérer toutes les fonctionnalités d'un projet par son ID
-const getFeaturesByProjectId = async (projectId: string): Promise<IProject['features'] | null> => {
+const getFeaturesByProjectId = async (projectId: string): Promise<IFeature[]> => {
   await connect()
   try {
     const project = await (Project as Model<IProject>).findById(projectId).lean().exec()
-    if (project == null) {
-      console.error(`Projet avec l'ID ${projectId} introuvable.`)
-      return null
+    if (project == null || !project.features) {
+      console.error(`Projet avec l'ID ${projectId} introuvable ou sans features.`)
+      return []
     }
-    return (project.features != null) || []
+    return project.features
   } catch (error) {
     console.error('Erreur lors de la récupération des fonctionnalités par projectId:', error)
-    return null
+    return []
   } finally {
     await disconnect()
   }
 }
 
 // Récupérer une fonctionnalité spécifique par projectId et featureId
-const getFeatureByProjectIdAndFeatureId = async (projectId: string, featureId: string): Promise<IProject['features'][number] | null> => {
+const getFeatureByProjectIdAndFeatureId = async (projectId: string, featureId: string): Promise<IFeature | null> => {
   await connect()
   try {
     const project = await (Project as Model<IProject>).findById(projectId).lean().exec()
-    if (project == null) {
-      console.error(`Projet avec l'ID ${projectId} introuvable.`)
+    if (project == null || !project.features) {
+      console.error(`Projet avec l'ID ${projectId} introuvable ou sans features.`)
       return null
     }
-    const feature = ((project.features?.find(f => f._id.toString() === featureId)) != null) || null
-    return feature
+    const feature = project.features.find(f => (f as any)._id && (f as any)._id.toString() === featureId)
+    return feature ?? null
   } catch (error) {
     console.error('Erreur lors de la récupération de la fonctionnalité par projectId et featureId:', error)
     return null
@@ -76,10 +76,9 @@ const getFeatureByProjectIdAndFeatureId = async (projectId: string, featureId: s
   }
 }
 
+// mettre à jour les features sélectionnées
 const updateSelectedFeatures = async (selection: IFeature[]): Promise<void> => {
-  // exemple minimal : on écrase tout
-  await Feature.deleteMany({})
-  await Feature.insertMany(selection)
+  
 }
 
 export {
