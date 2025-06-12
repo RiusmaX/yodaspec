@@ -1,3 +1,4 @@
+
 import { IProject } from '@/types/interfaces'
 import { connect, disconnect } from '@/lib/db'
 import Project from '../models/project'
@@ -7,14 +8,15 @@ const getProjects = async (): Promise<IProject[]> => {
   await connect()
   try {
     const projects = await (Project as Model<IProject>).find().lean().exec()
+
     return projects
   } catch (error) {
+    console.error('Error fetching projects:', error)
     return []
   } finally {
     await disconnect()
   }
 }
-
 const getOneProject = async (projectId: string): Promise<IProject | null> => {
   await connect()
   try {
