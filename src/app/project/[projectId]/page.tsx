@@ -37,7 +37,7 @@ async function ProjectHome (props: Readonly<{ params: Promise <{ projectId: stri
           </Link>
         )}
         {/* Composant pour générer une nouvelle spécification */}
-        <CreateSpecDialog projectId={String(project._id)} />
+        <CreateSpecDialog projectId={String(project._id)} projectTitle={project.title} projectDescription={project.description} />
       </div>
     </div>
   )

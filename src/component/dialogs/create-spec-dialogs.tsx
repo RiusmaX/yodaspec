@@ -4,22 +4,23 @@ import { JSX, useState } from 'react'
  
 interface Props {
   projectId: string
+  projectTitle: string
+  projectDescription?: string
 }
  
 // Composant permettant de générer une spécification pour un projet donné
-export default function GenerateSpecDialog ({ projectId }: Props): JSX.Element {
+export default function GenerateSpecDialog ({ projectId, projectTitle, projectDescription }: Props): JSX.Element {
   // États pour gérer le chargement, les erreurs, le succès et le résultat
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
   const [result, setResult] = useState<any>(null)
-  const router = useRouter()
  
   // Fonction qui crée des fausses données pour step2
   const generateFakeData = (): Record<string, string> => {
     return {
-      title: "Application mobile d'accès au stade du club de foot de Paris",
-      context: "Création de l'application mobile pour gérer l'accès au nouveau stade de Paris."
+      feature: "Application mobile d'accès au stade du club de foot de Paris",
+      description: "Création de l'application mobile pour gérer l'accès au nouveau stade de Paris."
     }
   }
  
@@ -38,8 +39,10 @@ export default function GenerateSpecDialog ({ projectId }: Props): JSX.Element {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           projectId,
-          title: fakeData.title,
-          context: fakeData.context
+          title : projectTitle,
+          context : projectDescription,
+          feature: fakeData.feature,
+          descriptionFeature: fakeData.description
         })
       })
  
@@ -90,4 +93,5 @@ export default function GenerateSpecDialog ({ projectId }: Props): JSX.Element {
      
   )
 }
+ 
  
