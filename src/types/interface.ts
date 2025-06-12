@@ -22,15 +22,6 @@ export interface Step2 {
 export interface Step3 {
   specs: Spec[] // Les spécifications à valider et enrichir
 }
-export interface IaCheckInput {
-  features: string[] // ex : ["Créer tâche", "Supprimer tâche"]
-  specs: any[] // ex : tableau d’objets de specs (mock ou réel)
-}
-
-export interface IaCheckResult {
-  promptUsed: string // Le texte exact envoyé à l’IA
-  response: string // La réponse brute de l’IA
-}
 
 export interface Feature {
   title: string
@@ -38,22 +29,52 @@ export interface Feature {
 }
 
 export interface Spec {
-  titre: string
-  description: string
-  [key: string]: any // pour permettre des champs enrichis (matched_features, etc.)
+  _id?: string;
+  titreSpec: string;
+  contexte: string;
+  objectifs: string;
+  acteurs: string[];
+  description: string;
+  conditionsSucces: string;
+  preConditions: string;
+  etapesFlux: string[];
+  scenariosErreurs: string[];
+  scenariosAlternatifs: string[];
+  reglesGestion: string[];
+  interfaceUxUi: string;
+  casTests: string[];
+  postCondition: string;
+  status: 'en cours' | 'validée' | 'brouillon';
 }
 
-export interface EnrichedSpec extends any {
-  matched_features: string[]
-}
+export interface ValidatedSpec {
+  _id?: string; // Optionnel si généré par MongoDB
 
-export interface CheckPrompt {
-  label: string
-  type: 'text' | 'json'
-  template: (features: any, specs: any, enrichedPrompt?: string) => string
-}
+  // Champs de base
+  titreSpec: string;
+  contexte: string;
+  objectifs: string;
+  acteurs: string[];
+  description: string;
+  conditionsSucces: string;
+  preConditions: string;
+  etapesFlux: string[];
+  scenariosErreurs: string[];
+  scenariosAlternatifs: string[];
+  reglesGestion: string[];
+  interfaceUxUi: string;
+  casTests: string[];
+  postCondition: string;
+  status: 'en cours' | 'validée' | 'brouillon';
 
-export interface enrichedContext {
-  title: string
-  text: string
+  // Champs ajoutés automatiquement par les prompts
+  valid_context: boolean;             // ✅ Prompt 1
+  is_modified: boolean;              // ✅ Prompt 1
+
+  matched_features: string[];        // ✅ Prompt 2
+  covers_feature: string[];          // ✅ Prompt 3
+  similar_to: string[];              // ✅ Prompt 4
+
+  structure_valid: boolean;          // ✅ Prompt 5
+  structure_errors: string[];        // ✅ Prompt 5
 }
