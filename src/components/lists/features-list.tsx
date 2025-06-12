@@ -6,14 +6,16 @@ import ValidationBar from '../validation/validation-bar'
 import { ClientFeature } from '@/types/interfaces'
 import { updateSelectedFeatures } from '@/actions/feature-actions'
 import { Button } from '../ui/button'
+import { toast } from 'react-toastify'
 
-function FeaturesList ({
+function FeaturesList({
   projectId,
   features
 }: Readonly<{ projectId: string, features: ClientFeature[] }>): React.ReactNode {
   const [selected, setSelected] = useState<Record<string, boolean>>(
     Object.fromEntries(features.map((f) => [f._id, true]))
   )
+  const [isLoading, setIsLoading] = useState(false)
   const [editedFeatures, setEditedFeatures] = useState<ClientFeature[]>(features)
   const [showAdd, setShowAdd] = useState(false)
   const [newFeature, setNewFeature] = useState({
@@ -52,6 +54,7 @@ function FeaturesList ({
     setSelected((prev) => ({ ...prev, [id]: true }))
     setNewFeature({ feature: '', description: '' })
     setShowAdd(false)
+    toast.success('Fonctionnalité ajoutée avec succès !')
   }
 
   // Sélection des fonctionnalités actuellement sélectionnées
@@ -65,49 +68,73 @@ function FeaturesList ({
     setIsValidating(true)
     sendAndFormatFeatures(selection, projectId)
       .catch((error) => {
+        toast.error('Erreur lors de la validation des fonctionnalités')
         console.error('Erreur lors de la validation des fonctionnalités:', error)
         setFormatLog('Erreur lors de la validation des fonctionnalités')
       })
+
       .finally(() => setIsValidating(false))
   }, [selection, projectId])
 
   // Fonction pour envoyer les fonctionnalités à Gemini et les formater
-  async function sendAndFormatFeatures (features: ClientFeature[], projectId: string): Promise<void> {
-    setFormatLog('Début de la requête Gemini pour formatage...')
+  async function sendAndFormatFeatures(features: ClientFeature[], projectId: string): Promise<void> {
+    setIsLoading(true)
+    
+    // Créer un ID unique pour ce toast de loading
+    const loadingToastId = toast.loading('Début de la requête Gemini pour formatage...')
+    
     console.log('[Gemini] Envoi des features à formater:', features)
-    // Ajout d'un prompt explicite pour le formatage
-    const prompt = `Formate proprement la liste suivante de fonctionnalités pour un projet. Pour chaque fonctionnalité, corrige le nom et la description pour qu'ils soient clairs, concis, cohérents et professionnels. Retourne un tableau JSON d'objets {feature, description} sans autre texte.\n\nListe à formater :\n${features
-      .map((f, i) => `${i + 1}. ${f.feature} : ${f.description}`)
-      .join('\n')}`
-    const response = await fetch('/api/gemini-proxy', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        promptType: 'format',
-        features,
-        prompt
+    
+    try {
+      // Ajout d'un prompt explicite pour le formatage
+      const prompt = `Formate proprement la liste suivante de fonctionnalités pour un projet. Pour chaque fonctionnalité, corrige le nom et la description pour qu'ils soient clairs, concis, cohérents et professionnels. Retourne un tableau JSON d'objets {feature, description} sans autre texte.\n\nListe à formater :\n${features
+        .map((f, i) => `${i + 1}. ${f.feature} : ${f.description}`)
+        .join('\n')}`
+      
+      const response = await fetch('/api/gemini-proxy', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          promptType: 'format',
+          features,
+          prompt
+        })
       })
-    })
-    if (!response.ok) {
-      setFormatLog('Erreur lors de la requête Gemini')
-      throw new Error('Erreur lors de la requête Gemini')
+      
+      if (!response.ok) {
+        throw new Error('Erreur lors de la requête Gemini')
+      }
+      
+      const formatted: ClientFeature[] = (await response.json()).map((f: any) => ({
+        ...f,
+        _id: `${String(f.feature)}-${String(f.description)}` // ou utilise un vrai uuid si dispo
+      }))
+      
+      console.log('[Gemini] Réponse formatée:', formatted)
+      setFormattedFeatures(formatted)
+      setEditedFeatures(formatted)
+      setSelected(Object.fromEntries(formatted.map((f) => [f._id, true])))
+      
+      // ✅ Dismiss du toast de loading et affichage du succès
+      toast.dismiss(loadingToastId)
+      toast.success('La mise en forme de vos fonctionnalités est terminée !')
+      
+    } catch (error) {
+      // ✅ Dismiss du toast de loading et affichage de l'erreur
+      toast.dismiss(loadingToastId)
+      toast.error('Erreur lors de la requête Gemini')
+      throw error
+    } finally {
+      setIsLoading(false)
     }
-    const formatted: ClientFeature[] = (await response.json()).map((f: any) => ({
-      ...f,
-      _id: `${String(f.feature)}-${String(f.description)}` // ou utilise un vrai uuid si dispo
-    }))
-    setFormatLog('La mise en forme de vos fonctionnalités est terminée !')
-    console.log('[Gemini] Réponse formatée:', formatted)
-    setFormattedFeatures(formatted)
-    setEditedFeatures(formatted)
-    setSelected(Object.fromEntries(formatted.map((f) => [f._id, true])))
   }
 
   // Fonction pour sauvegarder la sélection de fonctionnalités
-  async function saveFeatureSelection (selection: ClientFeature[], projectId: string): Promise<void> {
-  // Conversion ClientFeature -> IFeature (on enlève _id)
+  async function saveFeatureSelection(selection: ClientFeature[], projectId: string): Promise<void> {
+    // Conversion ClientFeature -> IFeature (on enlève _id)
     const featuresToSave = selection.map(({ feature, description }) => ({ feature, description }))
     await updateSelectedFeatures(projectId, featuresToSave)
+    toast.success('Fonctionnalités sauvegardées avec succès !')
   }
 
   return (
@@ -201,7 +228,7 @@ function FeaturesList ({
           disabled={selection.length === 0 || isValidating}
           onValidate={async () => {
             await saveFeatureSelection(selection, projectId)
-          // Ajouter la logique de navigation
+            // Ajouter la logique de navigation
           }}
         />
       </div>
