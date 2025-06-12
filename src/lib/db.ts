@@ -16,8 +16,8 @@ if (typeof process.env.MONGODB_PARAMS !== 'string' || process.env.MONGODB_PARAMS
   console.log({ MONGODBDB_PARAMS: process.env.MONGODBDB_PARAMS })
   throw new Error('MONGODBDB_PARAMS must be set')
 }
-if (typeof process.env.MONGODB_APP_NAME !== 'string' || process.env.MONGODB_APP_NAME.length === 0) {
-  throw new Error('MONGODB_APP_NAME must be set')
+if (typeof process.env.MONGODB_APP !== 'string' || process.env.MONGODB_APP.length === 0) {
+  throw new Error('MONGODB_APP must be set')
 }
 
 const MONGODB_URI = `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@${process.env.MONGODB_HOST}/${process.env.MONGODB_PARAMS}&appName=${process.env.MONGODB_APP_NAME}`

@@ -4,12 +4,12 @@ import { useState } from 'react'
 import { runAllIaChecks } from '@/db/services/check-services'
 import { ValidatedSpec } from '@/types/interface'
 
-export default async function Step4Validation ({
+export default function Step4Validation ({
   projectId
 }: {
   projectId: string
 
-}): Promise<React.ReactElement> {
+}): React.ReactElement {
   const [loading, setLoading] = useState(false)
   const [results, setResults] = useState<ValidatedSpec[] | null>(null)
   const [error, setError] = useState<string | null>(null)
