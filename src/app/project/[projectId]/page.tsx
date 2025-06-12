@@ -1,4 +1,3 @@
-import SpecData from '@/components/dataTable/specData'
 import { Table } from '@/components/ui/table'
 import { getProjectById } from '@/db/services/project-service'
 import { redirect } from 'next/navigation'
