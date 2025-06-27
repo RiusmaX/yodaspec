@@ -24,7 +24,7 @@ function CreateProjectDialog ({
   // Fonction pour appeler l'API Gemini
   const fetchFeaturesFromGemini = async (title: string, description: string): Promise<string[]> => {
     try {
-      const response = await fetch('/api/gemini-proxy', {
+      const response = await fetch('/api/gemini-proxy-step-2', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

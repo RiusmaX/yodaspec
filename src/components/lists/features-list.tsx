@@ -91,7 +91,7 @@ function FeaturesList({
         .map((f, i) => `${i + 1}. ${f.feature} : ${f.description}`)
         .join('\n')}`
       
-      const response = await fetch('/api/gemini-proxy', {
+      const response = await fetch('/api/gemini-proxy-step-2', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
